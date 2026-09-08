@@ -1,19 +1,19 @@
 package org.ignia.comprobante.productos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProductDto {
 
     private Integer productUID;
     private String nameProduct;
-    private Double unitPrice;
-    private Double profitPercentage;
+    private BigDecimal unitPrice;
+    private BigDecimal profitPercentage;
     private Integer stock;
     private boolean active;
 

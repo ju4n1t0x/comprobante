@@ -1,10 +1,7 @@
 package org.ignia.comprobante.categorias;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ignia.comprobante.productos.ProductModel;
 
 import java.util.List;
@@ -14,13 +11,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoriaModel {
+@Builder
+public class CategoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String categoryUID;
     private String description;
+
 
 
     //relacion con producto

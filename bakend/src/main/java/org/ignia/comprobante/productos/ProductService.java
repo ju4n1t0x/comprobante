@@ -1,14 +1,22 @@
 package org.ignia.comprobante.productos;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     public List<ProductDto> getAllProducts() {
-        return List.of();
+        return productRepository.findAll()
+                .stream()
+                .map(Mapper::toPorudctDTO)
+                .toList();
     }
 
     @Override

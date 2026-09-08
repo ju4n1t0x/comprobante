@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ignia.comprobante.ItemVenta.ItemSaleModel;
-import org.ignia.comprobante.categorias.CategoriaModel;
+import org.ignia.comprobante.categorias.CategoryModel;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ProductModel {
 
     //relacion con categoria
     @ManyToOne
-    private CategoriaModel categoria;
+    private CategoryModel categoria;
 
 
 
