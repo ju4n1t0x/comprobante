@@ -1,4 +1,4 @@
-package org.ignia.comprobante.categorias;
+package org.ignia.comprobante.categories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

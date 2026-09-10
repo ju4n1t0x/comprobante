@@ -1,4 +1,4 @@
-package org.ignia.comprobante.ItemVenta;
+package org.ignia.comprobante.itemVenta;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ignia.comprobante.productos.ProductModel;
 import org.ignia.comprobante.ventas.SaleModel;
-import org.ignia.comprobante.ventas.State;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Getter

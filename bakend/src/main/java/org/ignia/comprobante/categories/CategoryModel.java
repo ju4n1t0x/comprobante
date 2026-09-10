@@ -1,4 +1,4 @@
-package org.ignia.comprobante.categorias;
+package org.ignia.comprobante.categories;
 
 import jakarta.persistence.*;
 import lombok.*;

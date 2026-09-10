@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ignia.comprobante.ItemVenta.ItemSaleModel;
+import org.ignia.comprobante.itemVenta.ItemSaleModel;
 import org.ignia.comprobante.cliente.ClientModel;
 import org.ignia.comprobante.user.UserModel;
 
