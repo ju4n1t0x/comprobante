@@ -1,0 +1,422 @@
+/* ============ Tokens ============ */
+.root {
+    -bg-0: #0b0d10;
+    -bg-1: #12151a;
+    -bg-2: #181c22;
+    -bg-3: #1f242b;
+    -line: #232830;
+    -text: #e7e5e4;
+    -muted: #8b929c;
+    -accent: #f5c518;
+    -accent-dim: #c99f0e;
+    -danger: #e5484d;
+    -ok: #35c46f;
+
+    -fx-background-color: -bg-0;
+    -fx-font-size: 13px;
+    -fx-text-fill: -text;
+}
+
+/* ============ Shell ============ */
+.top-navbar {
+    -fx-background-color: -bg-1;
+    -fx-border-color: transparent transparent -line transparent;
+    -fx-padding: 10 24 10 24;
+    -fx-alignment: center-left;
+}
+
+.brand {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.brand-logo {
+    -fx-background-color: -accent;
+    -fx-text-fill: #111;
+    -fx-font-family: "Anton";
+    -fx-font-size: 20px;
+    -fx-padding: 2 9 2 9;
+}
+
+.brand-text {
+    -fx-spacing: -2;
+}
+
+.brand-text .label {
+    -fx-font-family: "Anton";
+    -fx-font-size: 16px;
+    -fx-text-fill: -text;
+}
+
+.brand-text .label:nth-child(2) {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 10px;
+    -fx-text-fill: -muted;
+}
+
+.nav-tabs {
+    -fx-spacing: 28;
+    -fx-alignment: center;
+}
+
+.nav-tab {
+    -fx-text-fill: -muted;
+    -fx-font-size: 13px;
+    -fx-padding: 6 2 6 2;
+    -fx-cursor: hand;
+}
+
+.nav-tab:hover {
+    -fx-text-fill: -text;
+}
+
+.nav-tab-active {
+    -fx-text-fill: -accent;
+    -fx-border-color: transparent transparent -accent transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.user-chip {
+    -fx-spacing: 10;
+    -fx-alignment: center-right;
+}
+
+.user-chip .label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -text;
+}
+
+.user-chip .label:nth-child(2) {
+    -fx-font-size: 10px;
+    -fx-text-fill: -muted;
+}
+
+.user-avatar {
+    -fx-background-color: -bg-3;
+    -fx-background-radius: 4;
+    -fx-text-fill: -accent;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+    -fx-padding: 8;
+}
+
+/* ============ Sidebar ============ */
+.sidebar {
+    -fx-background-color: -bg-1;
+    -fx-border-color: transparent -line transparent transparent;
+    -fx-pref-width: 250;
+    -fx-padding: 22 14 22 14;
+    -fx-spacing: 16;
+}
+
+.sidebar-title {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.sidebar-items {
+    -fx-spacing: 2;
+}
+
+.side-item {
+    -fx-padding: 8 12 8 12;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
+}
+
+.side-item:hover {
+    -fx-background-color: -bg-2;
+}
+
+.side-item-active {
+    -fx-background-color: -bg-2;
+    -fx-border-color: transparent transparent transparent -accent;
+    -fx-border-width: 0 0 0 3;
+}
+
+.side-item-label {
+    -fx-text-fill: -text;
+    -fx-font-size: 13px;
+}
+
+.side-count {
+    -fx-text-fill: -accent;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.side-count-warn {
+    -fx-text-fill: -danger;
+}
+
+.summary-card {
+    -fx-background-color: -bg-2;
+    -fx-background-radius: 6;
+    -fx-padding: 14;
+    -fx-spacing: 2;
+}
+
+.summary-label {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 10px;
+}
+
+.summary-value {
+    -fx-text-fill: -accent;
+    -fx-font-family: "Anton";
+    -fx-font-size: 26px;
+}
+
+.summary-suffix {
+    -fx-text-fill: -muted;
+    -fx-font-size: 11px;
+}
+
+/* ============ Views / content ============ */
+.view-root {
+    -fx-background-color: -bg-0;
+    -fx-padding: 24 28 24 28;
+    -fx-spacing: 18;
+}
+
+.placeholder {
+    -fx-background-color: -bg-0;
+    -fx-alignment: center;
+}
+
+.placeholder-text {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 14px;
+}
+
+/* ============ Action bar ============ */
+.action-bar {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.breadcrumb {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.search-field {
+    -fx-background-color: -bg-1;
+    -fx-background-radius: 4;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-text-fill: -text;
+    -fx-prompt-text-fill: -muted;
+    -fx-padding: 8 12 8 12;
+    -fx-pref-width: 260;
+}
+
+.btn-primary {
+    -fx-background-color: -accent;
+    -fx-background-radius: 4;
+    -fx-text-fill: #111;
+    -fx-font-size: 13px;
+    -fx-padding: 9 16 9 16;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: -accent-dim;
+}
+
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-text-fill: -text;
+    -fx-font-size: 13px;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.btn-ghost:hover {
+    -fx-border-color: -muted;
+}
+
+/* ============ Card / table ============ */
+.card {
+    -fx-background-color: -bg-1;
+    -fx-background-radius: 8;
+    -fx-padding: 18;
+    -fx-spacing: 14;
+}
+
+.card-header {
+    -fx-alignment: center-left;
+}
+
+.card-title {
+    -fx-text-fill: -text;
+    -fx-font-family: "Anton";
+    -fx-font-size: 22px;
+}
+
+.card-subtitle {
+    -fx-text-fill: -muted;
+    -fx-font-size: 12px;
+}
+
+.card-meta {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.data-table {
+    -fx-background-color: transparent;
+    -fx-border-color: -line;
+    -fx-border-width: 1 0 1 0;
+}
+
+.data-table .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.data-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -accent transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 8 8 0;
+}
+
+.data-table .column-header .label {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 10px;
+}
+
+.data-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -line transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.data-table .table-row-cell:selected {
+    -fx-background-color: -bg-3;
+}
+
+.data-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text;
+    -fx-alignment: center-left;
+    -fx-padding: 10 8 10 0;
+}
+
+.cell-right {
+    -fx-alignment: center-right;
+}
+
+.cell-mono {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+}
+
+.cell-danger {
+    -fx-text-fill: -danger;
+}
+
+.col-actions {
+    -fx-alignment: center-right;
+}
+
+.row-actions {
+    -fx-spacing: 12;
+    -fx-alignment: center-right;
+}
+
+.row-action {
+    -fx-text-fill: -muted;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.row-action:hover {
+    -fx-text-fill: -accent;
+}
+
+.data-table .virtual-flow .scroll-bar:vertical,
+.data-table .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+/* ============ Pagination ============ */
+.pagination {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.page-size {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.page-buttons {
+    -fx-spacing: 4;
+    -fx-alignment: center-right;
+}
+
+.page-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+
+.page-btn:hover {
+    -fx-border-color: -muted;
+    -fx-text-fill: -text;
+}
+
+.page-btn-active {
+    -fx-background-color: -accent;
+    -fx-border-color: -accent;
+    -fx-text-fill: #111;
+}
+
+.page-btn:disabled {
+    -fx-opacity: 0.4;
+}
+
+/* ============ Dialogs ============ */
+.app-dialog {
+    -fx-background-color: -bg-1;
+}
+
+.app-dialog .header-panel {
+    -fx-background-color: -bg-2;
+}
+
+.app-dialog .label {
+    -fx-text-fill: -text;
+}
+
+.app-dialog .text-field {
+    -fx-background-color: -bg-0;
+    -fx-border-color: -line;
+    -fx-text-fill: -text;
+    -fx-prompt-text-fill: -muted;
+}
+
+.app-dialog .button {
+    -fx-background-color: -bg-3;
+    -fx-text-fill: -text;
+    -fx-cursor: hand;
+}

@@ -16,5 +16,6 @@ public class ProductDto {
     private BigDecimal profitPercentage;
     private Integer stock;
     private boolean active;
+    private String categoryName;
 
 }

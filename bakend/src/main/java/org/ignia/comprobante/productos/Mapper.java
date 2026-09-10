@@ -2,7 +2,7 @@ package org.ignia.comprobante.productos;
 
 public class Mapper {
 
-    public static ProductDto toPorudctDTO(ProductModel productModel){
+    public static ProductDto toProductDTO(ProductModel productModel) {
         if (productModel == null) return null;
 
         return ProductDto.builder()
@@ -11,7 +11,10 @@ public class Mapper {
                 .unitPrice(productModel.getUnitPrice())
                 .profitPercentage(productModel.getProfitPercentage())
                 .stock(productModel.getStock())
-                .active(productModel.setActive())
+                .active(productModel.isActive())
+                .categoryName(productModel.getCategoria() == null
+                        ? null
+                        : productModel.getCategoria().getName())
                 .build();
     }
 }

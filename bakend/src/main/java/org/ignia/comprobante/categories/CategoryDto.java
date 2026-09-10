@@ -1,4 +1,4 @@
-package org.ignia.comprobante.categorias;
+package org.ignia.comprobante.categories;
 
 import lombok.*;
 
@@ -11,4 +11,5 @@ public class CategoryDto {
     private String categoryUID;
     private String name;
     private String description;
+    private long productCount;
 }
