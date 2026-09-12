@@ -30,7 +30,10 @@ public class JavaFxApplication extends Application {
         SpringFXMLLoader loader = context.getBean(SpringFXMLLoader.class);
 
         Parent root = loader.load("/fxml/main-gate.fxml");
-        Scene scene = new Scene(root, 1280, 800);
+        Scene scene = new Scene(root, 1340, 760);
+        primaryStage.setMinWidth(1280);
+        primaryStage.setMinHeight(750);
+        primaryStage.setMaximized(true);
         scene.getStylesheets().add(
                 getClass().getResource("/css/theme.css").toExternalForm());
         primaryStage.setTitle("Comprobante");

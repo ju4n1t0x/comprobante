@@ -44,7 +44,7 @@ public class DataCard<T> extends VBox {
         getChildren().add(header);
 
         table.getStyleClass().add("data-table");
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         buildColumns();
         VBox.setVgrow(table, Priority.ALWAYS);
         getChildren().add(table);
@@ -64,6 +64,7 @@ public class DataCard<T> extends VBox {
                 col.getStyleClass().add("col-right");
             }
             col.setCellValueFactory(cd -> new ReadOnlyStringWrapper(def.text().apply(cd.getValue())));
+            col.setPrefWidth(def.prefWidth());
             col.setCellFactory(tc -> new TableCell<>() {
                 @Override
                 protected void updateItem(String value, boolean empty) {
@@ -93,6 +94,8 @@ public class DataCard<T> extends VBox {
 
         if (!rowActions.isEmpty()) {
             TableColumn<T, Void> actions = new TableColumn<>("ACCIONES");
+            actions.setMinWidth(150);
+            actions.setMaxWidth(180);
             actions.getStyleClass().addAll("table-col", "col-actions");
             actions.setCellFactory(tc -> new TableCell<>() {
                 @Override

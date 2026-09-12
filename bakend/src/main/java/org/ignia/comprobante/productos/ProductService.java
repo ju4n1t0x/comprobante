@@ -78,6 +78,7 @@ public class ProductService implements IProductService {
                 .unitPrice(productDto.getUnitPrice())
                 .stock(productDto.getStock())
                 .profitPercentage(productDto.getProfitPercentage())
+                .active(productDto.isActive())
                 .build();
 
         return Mapper.toProductDTO(productRepository.save(product));
@@ -124,5 +125,15 @@ public class ProductService implements IProductService {
                 .max().orElse(0) +1;
 
         return prefix + "-" + String.format("%03d", next);
+    }
+
+    @Override
+    public Page<ProductDto> page(String search, Long categoryId, Pageable pageable) {
+        boolean hasSearch = search != null && !search.isBlank();
+        if (!hasSearch && categoryId == null) return page(pageable);
+        if (!hasSearch) return productRepository.findByCategoria_Id(categoryId, pageable).map(Mapper::toProductDTO);
+        String q = search.trim();
+        if (categoryId == null) return productRepository.findByNameProductContainingIgnoreCase(q, pageable).map(Mapper::toProductDTO);
+        return productRepository.findByCategoria_IdAndNameProductContainingIgnoreCase(categoryId, q, pageable).map(Mapper::toProductDTO);
     }
 }

@@ -14,6 +14,7 @@ import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DataCard;
 import org.ignia.comprobante.ui.model.*;
+import org.ignia.comprobante.ui.shell.SectionView;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ProductsController {
+public class ProductsController implements SectionView {
 
     private static final int PAGE_SIZE = 12;
     private static final int LOW_STOCK = 20;
@@ -43,6 +44,7 @@ public class ProductsController {
     private DataCard<ProductDto> dataCard;
     private Long filter;
     private int currentPage;
+    private String searchText = "";
 
     public ProductsController(IProductService productService, NavigationService navigationService, ICategoryService categoryService) {
         this.productService = productService;
@@ -52,6 +54,7 @@ public class ProductsController {
 
     @FXML
     private void initialize() {
+        navigationService.registerView(this);
         ActionBar bar = new ActionBar(new ActionBarConfig(null, "Buscar producto por nombre...",
                 List.of(
                         new ButtonDef("Exportar", ButtonDef.Style.GHOST, null),
@@ -61,34 +64,28 @@ public class ProductsController {
         dataCard = new DataCard<>("PRODUCTOS", "Inventario maestro", columns(), rowActions());
         dataCard.setOnPageChange(this::goToPage);
         contentSlot.getChildren().setAll(dataCard);
+        bar.setOnSearch(this::onSearch);
 
         reload();
     }
 
     private List<ColumnDef<ProductDto>> columns() {
         return List.of(
-                ColumnDef.of("SKU", p -> p.getProductUID() == null ? "" : String.valueOf(p.getProductUID())),
-                ColumnDef.of("NOMBRE", ProductDto::getNameProduct),
-                ColumnDef.of("CATEGORÍA", p -> p.getCategoryName() == null ? "" : p.getCategoryName()),
-                ColumnDef.of("PRECIO", p -> formatPrice(p.getUnitPrice()), ColumnDef.Align.RIGHT),
-                ColumnDef.of("PORCENTAJE DE GANANCIA", p -> p.getProfitPercentage() == null ? "" : String.format("%.2f%%", p.getProfitPercentage()), ColumnDef.Align.RIGHT),
-                ColumnDef.of("PRECIO TOTAL", p -> formatPrice(p.getTotalPrice()), ColumnDef.Align.RIGHT),
-                ColumnDef.of("STOCK", p -> p.getStock() == null ? "" : String.valueOf(p.getStock()),
-                        ColumnDef.Align.RIGHT, p -> p.getStock() != null && p.getStock() <= LOW_STOCK ? "cell-danger" : "")
-        );
+                ColumnDef.of("SKU", p -> p.getProductUID() == null ? "" : String.valueOf(p.getProductUID()),150),
+                ColumnDef.of("NOMBRE", ProductDto::getNameProduct, 400),
+                ColumnDef.of("CATEGORÍA", p -> p.getCategoryName() == null ? "" : p.getCategoryName(), 200),
+                ColumnDef.of("PRECIO", p -> formatPrice(p.getUnitPrice()), ColumnDef.Align.RIGHT, 110),
+                ColumnDef.of("PORCENTAJE DE GANANCIA", p -> p.getProfitPercentage() == null ? "" : String.format("%.2f%%", p.getProfitPercentage()), ColumnDef.Align.RIGHT, 110),
+                ColumnDef.of("PRECIO TOTAL", p -> formatPrice(p.getTotalPrice()), ColumnDef.Align.RIGHT, 130),
+                ColumnDef.of("STOCK", p -> p.getStock() == null ? "" : String.valueOf(p.getStock()), ColumnDef.Align.RIGHT, p -> p.getStock() != null && p.getStock() <= LOW_STOCK ? "cell-danger" : "", 80),
+                ColumnDef.of("ACTIVO", p -> p.isActive() ? "Si" : "No", 70));
     }
 
     private List<RowActionDef<ProductDto>> rowActions() {
         return List.of(
-                new RowActionDef<>("Editar", null),
-                new RowActionDef<>("Eliminar", null)
+                new RowActionDef<>("Editar", this::openEdit),
+                new RowActionDef<>("Eliminar", this::delete)
         );
-    }
-
-    private void reload() {
-        Page<ProductDto> page = productService.page(PageRequest.of(currentPage, PAGE_SIZE));
-        dataCard.setData(PageData.of(page.getContent(), page.getNumber(),
-                page.getTotalPages(), page.getSize(), page.getTotalElements()));
     }
 
     private void goToPage(int page) {
@@ -103,8 +100,15 @@ public class ProductsController {
         return String.format("$%,d", price.setScale(0, RoundingMode.HALF_UP).longValue());
     }
 
-    public void onSideBarSelection(SidebarItem item){
-        filter = "all".equals(item.id()) ? null : Long.valueOf(item.id());
+    public void onSidebarSelection(SidebarItem item){
+        String id = item.id();
+        if ("all".equals(id)) {
+            filter = null;
+        } else if (id.startsWith("cat-")) {
+            filter = Long.valueOf(id.substring(4));
+        } else if ("nostock".equals(id)) {
+            filter = null;
+        }
         currentPage = 0;
         reload();
     }
@@ -159,5 +163,17 @@ public class ProductsController {
     private void styleDialog(Dialog<?> dialog) {
         dialog.getDialogPane().getStyleClass().add("app-dialog");
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
+    }
+
+    private void onSearch(String q) {
+        searchText = q == null ? "" : q.trim();
+        currentPage = 0;
+        reload();
+    }
+
+    private void reload() {
+        Page<ProductDto> page = productService.page(searchText, filter, PageRequest.of(currentPage, PAGE_SIZE));
+        dataCard.setData(PageData.of(page.getContent(), page.getNumber(),
+                page.getTotalPages(), page.getNumberOfElements(), page.getTotalElements()));
     }
 }

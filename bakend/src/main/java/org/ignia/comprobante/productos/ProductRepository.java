@@ -1,5 +1,7 @@
 package org.ignia.comprobante.productos;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +18,9 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
     long countByStock(int stock);
 
     long countByCategoria_Id(Long categoriaId);
+
+    Page<ProductModel> findByCategoria_Id(Long categoryId, Pageable pageable);
+    Page<ProductModel> findByNameProductContainingIgnoreCase(String name, Pageable pageable);
+    Page<ProductModel> findByCategoria_IdAndNameProductContainingIgnoreCase(Long cateoriaId, String name, Pageable pageable);
+
 }

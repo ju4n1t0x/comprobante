@@ -1,22 +1,17 @@
 package org.ignia.comprobante.cliente;
 
-import jakarta.persistence.*;
+
 import lombok.*;
-import org.ignia.comprobante.ventas.SaleModel;
+import org.ignia.comprobante.ventas.SalesDTO;
 
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClientModel {
+public class ClientDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private Integer dni;
     private String name;
     private String secondName;
@@ -30,10 +25,6 @@ public class ClientModel {
     private String address;
     private String cuit;
 
-
-    //relacion con venta
-    @OneToMany(mappedBy = "client")
-    private List<SaleModel> listSales;
-
+    private List<SalesDTO> listSales;
 
 }

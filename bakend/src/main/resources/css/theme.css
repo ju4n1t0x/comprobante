@@ -284,6 +284,13 @@
     -fx-background-color: transparent;
 }
 
+.data-table .column-header-background .filler,
+.data-table .filler,
+.data-table corner {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
 .data-table .column-header {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent -accent transparent;
@@ -420,3 +427,47 @@
     -fx-text-fill: -text;
     -fx-cursor: hand;
 }
+
+.app-dialog .choice-box {
+    -fx-background-color: -bg-0;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-brackground-radius: 4;
+    -fx-padding: 4 8 4 8;
+}
+
+.app-dialog .choice-box > .label {
+    -fx-text-fill: -text;
+}
+
+.choice-box-popup .context-menu, .context-menu {
+    -fx-background-color: -bg-2;
+    -fx-border-color: -line;
+}
+
+.app-dialog .choice-box .menu-item > .label {
+    -fx-text-fill: -text;
+}
+.menu-item > .label {
+    -fx-text-fill: -text;
+}
+.menu-item:focused > .label{
+    -fx-background-color: -bg-3;
+}
+
+.app-dialog .check-box {
+    -fx-text-fill: -text;
+}
+
+.app-dialog .check-box .box {
+    -fx-background-color: -bg-0;
+    -fx-border-color: -line;
+    -fx-border-radius: 3;
+}
+
+.app-dialog .check-box:selected .mark {
+    -fx-background-color: -accent;
+}
+
+
+

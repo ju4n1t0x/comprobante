@@ -13,6 +13,8 @@ public interface IProductService {
 
     Page<ProductDto> page(Pageable pageable);
 
+    Page<ProductDto> page(String search, Long categoryId, Pageable pageable);
+
     Map<Long, Long> countsByCategory();
 
     long countProducts();
