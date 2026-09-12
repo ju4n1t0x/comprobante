@@ -68,7 +68,7 @@ public class DataCard<T> extends VBox {
                 @Override
                 protected void updateItem(String value, boolean empty) {
                     super.updateItem(value, empty);
-                    getStyleClass().clear();
+                    getStyleClass().removeAll("cell", "cell-mono", "cell-right", "cell-danger");
                     if (empty || value == null) {
                         setText(null);
                     } else {

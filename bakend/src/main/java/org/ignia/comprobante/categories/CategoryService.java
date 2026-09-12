@@ -2,7 +2,9 @@ package org.ignia.comprobante.categories;
 
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
+import org.ignia.comprobante.productos.CategoryProductCount;
 import org.ignia.comprobante.productos.IProductService;
+import org.ignia.comprobante.productos.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,16 +12,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final IProductService productService;
+    private final ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository categoryRepository, IProductService productService) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -37,7 +40,8 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public Page<CategoryDto> page(Long categoryFilter, Pageable pageable) {
-        Map<Long, Long> counts = productService.countsByCategory();
+        Map<Long, Long> counts = productRepository.countsByCategory().stream()
+                .collect(Collectors.toMap(CategoryProductCount::getCategoryId, CategoryProductCount::getCnt));
 
         if (categoryFilter != null) {
             CategoryModel model = categoryRepository.findById(categoryFilter).orElse(null);
@@ -93,9 +97,22 @@ public class CategoryService implements ICategoryService {
         if (!categoryRepository.existsById(id)) {
             throw new NotFoundException("Categoría no encontrada");
         }
-        if (productService.countProductsByCategory(id) > 0) {
+        if (productRepository.countByCategoria_Id(id) > 0) {
             throw new ConflictException("No se puede eliminar: la categoría tiene productos asociados");
         }
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public String resolveCategoryUID(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .map(CategoryModel::getCategoryUID)
+                .orElseThrow(() -> new NotFoundException("Categoria no encontrada"));
+    }
+
+    @Override
+    public CategoryModel getCategoryReference(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Categoria no encontrada"));
     }
 }

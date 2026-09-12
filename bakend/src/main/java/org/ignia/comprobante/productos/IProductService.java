@@ -1,5 +1,6 @@
 package org.ignia.comprobante.productos;
 
+import org.ignia.comprobante.categories.CategoryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,9 +23,9 @@ public interface IProductService {
 
     ProductDto getProductById(Long id);
 
-    ProductDto saveProduct(ProductModel productModel);
+    ProductDto saveProduct(ProductDto productDto);
 
-    ProductDto updateProduct(Long id, ProductModel productModel);
+    ProductDto updateProduct(Long id, ProductDto productDto);
 
     void deleteProduct(Long id);
 

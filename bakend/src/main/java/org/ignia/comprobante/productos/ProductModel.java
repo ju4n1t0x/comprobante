@@ -1,10 +1,7 @@
 package org.ignia.comprobante.productos;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ignia.comprobante.itemVenta.ItemSaleModel;
 import org.ignia.comprobante.categories.CategoryModel;
 
@@ -16,12 +13,14 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer productUID;
+    @Column(nullable=false, unique=true)
+    private String productUID;
     private String nameProduct;
     private BigDecimal unitPrice;
     private BigDecimal profitPercentage;

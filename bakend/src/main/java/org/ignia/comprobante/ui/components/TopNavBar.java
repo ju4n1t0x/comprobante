@@ -26,7 +26,7 @@ public class TopNavBar extends BorderPane {
         brand.getStyleClass().add("brand");
         Label logo = new Label("F");
         logo.getStyleClass().add("brand-logo");
-        VBox brandText = new VBox(new Label("FERRAL"), new Label("MATERIALES · V2.4"));
+        VBox brandText = new VBox(new Label("COMPROBANTE"), new Label("Ignia Labs · V1.0"));
         brandText.getStyleClass().add("brand-text");
         brand.getChildren().addAll(logo, brandText);
         setLeft(brand);

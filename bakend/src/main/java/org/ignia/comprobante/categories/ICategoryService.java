@@ -20,4 +20,8 @@ public interface ICategoryService {
     CategoryDto updateCategory(Long id, CategoryDto categoryDto);
 
     void deleteCategory(Long id);
+
+    String resolveCategoryUID(Long categoryId);
+
+    CategoryModel getCategoryReference(Long categoryId);
 }

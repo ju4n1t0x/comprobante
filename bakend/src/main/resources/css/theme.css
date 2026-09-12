@@ -306,11 +306,11 @@
 .data-table .table-row-cell:selected {
     -fx-background-color: -bg-3;
 }
-
-.data-table .table-cell {
+/* formato para texto en las celdas de la tabla */
+.data-table .cell {
     -fx-background-color: transparent;
     -fx-text-fill: -text;
-    -fx-alignment: center-left;
+    -fx-alignment: center;
     -fx-padding: 10 8 10 0;
 }
 

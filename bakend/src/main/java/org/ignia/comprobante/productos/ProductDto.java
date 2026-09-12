@@ -10,12 +10,15 @@ import java.math.BigDecimal;
 @Builder
 public class ProductDto {
 
-    private Integer productUID;
+    private Long id;
+    private String productUID;
     private String nameProduct;
     private BigDecimal unitPrice;
     private BigDecimal profitPercentage;
     private Integer stock;
     private boolean active;
+    private Long categoryId;
     private String categoryName;
+    private BigDecimal totalPrice;
 
 }

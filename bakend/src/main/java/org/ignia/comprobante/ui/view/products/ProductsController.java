@@ -1,16 +1,19 @@
 package org.ignia.comprobante.ui.view.products;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.StackPane;
+import org.ignia.comprobante.categories.CategoryDto;
+import org.ignia.comprobante.categories.ICategoryService;
+import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.productos.IProductService;
 import org.ignia.comprobante.productos.ProductDto;
+import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DataCard;
-import org.ignia.comprobante.ui.model.ActionBarConfig;
-import org.ignia.comprobante.ui.model.ButtonDef;
-import org.ignia.comprobante.ui.model.ColumnDef;
-import org.ignia.comprobante.ui.model.PageData;
-import org.ignia.comprobante.ui.model.RowActionDef;
+import org.ignia.comprobante.ui.model.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -28,16 +32,22 @@ public class ProductsController {
     private static final int PAGE_SIZE = 12;
     private static final int LOW_STOCK = 20;
 
+
     @FXML private StackPane toolbarSlot;
     @FXML private StackPane contentSlot;
 
     private final IProductService productService;
+    private final ICategoryService categoryService;
+    private final NavigationService navigationService;
 
     private DataCard<ProductDto> dataCard;
+    private Long filter;
     private int currentPage;
 
-    public ProductsController(IProductService productService) {
+    public ProductsController(IProductService productService, NavigationService navigationService, ICategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
+        this.navigationService = navigationService;
     }
 
     @FXML
@@ -45,7 +55,7 @@ public class ProductsController {
         ActionBar bar = new ActionBar(new ActionBarConfig(null, "Buscar producto por nombre...",
                 List.of(
                         new ButtonDef("Exportar", ButtonDef.Style.GHOST, null),
-                        new ButtonDef("+ Alta de producto", ButtonDef.Style.PRIMARY, null))));
+                        new ButtonDef("+ Alta de producto", ButtonDef.Style.PRIMARY, this::openCreate))));
         toolbarSlot.getChildren().setAll(bar);
 
         dataCard = new DataCard<>("PRODUCTOS", "Inventario maestro", columns(), rowActions());
@@ -61,6 +71,8 @@ public class ProductsController {
                 ColumnDef.of("NOMBRE", ProductDto::getNameProduct),
                 ColumnDef.of("CATEGORÍA", p -> p.getCategoryName() == null ? "" : p.getCategoryName()),
                 ColumnDef.of("PRECIO", p -> formatPrice(p.getUnitPrice()), ColumnDef.Align.RIGHT),
+                ColumnDef.of("PORCENTAJE DE GANANCIA", p -> p.getProfitPercentage() == null ? "" : String.format("%.2f%%", p.getProfitPercentage()), ColumnDef.Align.RIGHT),
+                ColumnDef.of("PRECIO TOTAL", p -> formatPrice(p.getTotalPrice()), ColumnDef.Align.RIGHT),
                 ColumnDef.of("STOCK", p -> p.getStock() == null ? "" : String.valueOf(p.getStock()),
                         ColumnDef.Align.RIGHT, p -> p.getStock() != null && p.getStock() <= LOW_STOCK ? "cell-danger" : "")
         );
@@ -89,5 +101,63 @@ public class ProductsController {
             return "";
         }
         return String.format("$%,d", price.setScale(0, RoundingMode.HALF_UP).longValue());
+    }
+
+    public void onSideBarSelection(SidebarItem item){
+        filter = "all".equals(item.id()) ? null : Long.valueOf(item.id());
+        currentPage = 0;
+        reload();
+    }
+
+    private void openCreate() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        new ProductFormDialog(null, categories).showAndWait().ifPresent(dto -> {
+            productService.saveProduct(dto);
+            currentPage = 0;
+            reload();
+            navigationService.refreshSidebar();
+        });
+    }
+
+    private void openEdit(ProductDto dto){
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        new ProductFormDialog(dto, categories).showAndWait().ifPresent(updated -> {
+            productService.updateProduct(dto.getId(), updated);
+            reload();
+            navigationService.refreshSidebar();
+        });
+    }
+
+    private void delete(ProductDto dto) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        styleDialog(confirm);
+        confirm.setTitle("Eliminar producto");
+        confirm.setHeaderText("¿Eliminar «" + dto.getNameProduct() + "»?");
+        confirm.setContentText("Esta acción no se puede deshacer.");
+
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            try {
+                productService.deleteProduct(dto.getId());
+                currentPage = 0;
+                reload();
+                navigationService.refreshSidebar();
+            } catch (ConflictException ex) {
+                showError(ex.getMessage());
+            }
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+        styleDialog(alert);
+        alert.setTitle("No se pudo completar");
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    private void styleDialog(Dialog<?> dialog) {
+        dialog.getDialogPane().getStyleClass().add("app-dialog");
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
     }
 }
