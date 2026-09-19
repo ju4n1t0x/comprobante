@@ -17,7 +17,7 @@ public class ClientModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer dni;
+    private String dni;
     private String name;
     private String secondName;
     private String lastName;

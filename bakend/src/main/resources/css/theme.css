@@ -286,9 +286,8 @@
 
 .data-table .column-header-background .filler,
 .data-table .filler,
-.data-table corner {
+.data-table .corner {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
 .data-table .column-header {
@@ -432,7 +431,7 @@
     -fx-background-color: -bg-0;
     -fx-border-color: -line;
     -fx-border-radius: 4;
-    -fx-brackground-radius: 4;
+    -fx-background-radius: 4;
     -fx-padding: 4 8 4 8;
 }
 
@@ -445,13 +444,15 @@
     -fx-border-color: -line;
 }
 
-.app-dialog .choice-box .menu-item > .label {
-    -fx-text-fill: -text;
+.data-table .column-header-background .filler,
+.data-table .filler,
+.data-table .corner{
+    -fx-background-color: transparent;
+    -fx-border-color: -transparent;
 }
-.menu-item > .label {
-    -fx-text-fill: -text;
-}
-.menu-item:focused > .label{
+
+.choice-box-popup .menu-item:focused,
+.context-menu .menu-item:focused {
     -fx-background-color: -bg-3;
 }
 
@@ -465,8 +466,18 @@
     -fx-border-radius: 3;
 }
 
-.app-dialog .check-box:selected .mark {
+.app-dialog .check-box:selected > box > .mark {
     -fx-background-color: -accent;
+}
+
+
+.field-error {
+    -fx-text-fill: -danger;
+    -fx-font-size: 11px;
+}
+
+.app-dialog .text-field:error {
+    -fx-border-color: -danger;
 }
 
 

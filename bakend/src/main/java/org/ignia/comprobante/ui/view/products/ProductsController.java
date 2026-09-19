@@ -100,6 +100,7 @@ public class ProductsController implements SectionView {
         return String.format("$%,d", price.setScale(0, RoundingMode.HALF_UP).longValue());
     }
 
+    @Override
     public void onSidebarSelection(SidebarItem item){
         String id = item.id();
         if ("all".equals(id)) {
@@ -174,6 +175,6 @@ public class ProductsController implements SectionView {
     private void reload() {
         Page<ProductDto> page = productService.page(searchText, filter, PageRequest.of(currentPage, PAGE_SIZE));
         dataCard.setData(PageData.of(page.getContent(), page.getNumber(),
-                page.getTotalPages(), page.getNumberOfElements(), page.getTotalElements()));
+                page.getTotalPages(), page.getSize(), page.getTotalElements()));
     }
 }

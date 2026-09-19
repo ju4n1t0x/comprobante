@@ -1,21 +1,41 @@
 package org.ignia.comprobante.cliente;
 
+import jakarta.validation.Validator;
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService implements IClientService{
 
     private final ClientRepository clientRepository;
+    private final Validator validator;
 
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, Validator validator) {
         this.clientRepository = clientRepository;
+        this.validator = validator;
+    }
+
+    private void validate(ClientDTO dto) {
+        var violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            String msg = violations.stream()
+                    .map(v -> v.getPropertyPath() + " " + v.getMessage())
+                    .sorted().collect(Collectors.joining(", "));
+            throw new IllegalStateException(msg);
+        }
+        clientRepository.findByDni(dto.getDni().trim())
+                .filter(c -> dto.getId() == null || !c.getId().equals(dto.getId()))
+                .ifPresent(c -> {
+                    throw new ConflictException("Ya existe un cliente con el dni " + dto.getDni());
+                });
     }
 
     //traemos el listado de clientes
@@ -24,11 +44,20 @@ public class ClientService implements IClientService{
         return clientRepository.findAll().stream().map(Mapper::toClientDto).toList();
     }
 
+    @Override
+    public Page<ClientDTO> page(String search, Pageable pageable) {
+        return page(search, null, pageable);
+    }
     //paginamos el listado de clientes
     @Override
-    public Page<ClientDTO> page(Pageable pageable) {
-        return clientRepository.findAll(pageable)
-                .map(Mapper::toClientDto);
+    public Page<ClientDTO> page(String search, String city, Pageable pageable) {
+        boolean hasSearch = search != null && !search.isBlank();
+        boolean hasCity = city != null && !city.isBlank();
+        if (!hasSearch && !hasCity) return clientRepository.findAll(pageable).map(Mapper::toClientDto);
+        if (!hasSearch) return clientRepository.findByCityIgnoreCase(city.trim(), pageable).map(Mapper::toClientDto);
+        String q = search.trim();
+        if (!hasCity) return clientRepository.search(q, pageable).map(Mapper::toClientDto);
+        return clientRepository.searchInCity(q, city.trim(), pageable).map(Mapper::toClientDto);
     }
 
     //traemos un cliente por id
@@ -38,17 +67,13 @@ public class ClientService implements IClientService{
         if (!client.isPresent()) {
             throw new RuntimeException("No existe el cliente con dni" + id);
         }
-        return clientRepository.findById(id)
-                .stream()
-                .map(Mapper::toClientDto)
-                .findFirst()
-                .orElse(null);
+        return Mapper.toClientDto(client.get());
     }
 
     //guardamos un cliente
     @Override
     public ClientDTO saveClient(ClientDTO clientDTO) {
-
+        validate(clientDTO);
         ClientModel clientModel = ClientModel.builder()
                 .dni(clientDTO.getDni())
                 .name(clientDTO.getName())
@@ -70,6 +95,7 @@ public class ClientService implements IClientService{
     //actualizamos un cliente
     @Override
     public ClientDTO updateClient(Long id, ClientDTO clientDTO) {
+        validate(clientDTO);
         ClientModel clientModel = clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No existe el cliente con id " + id));
 
@@ -97,6 +123,7 @@ public class ClientService implements IClientService{
         if (clientModel.getListSales() != null && !clientModel.getListSales().isEmpty()){
             throw new ConflictException("No se puede eliminar: tiene ventas asociadas");
         }
+        clientRepository.delete(clientModel);
     }
 
     //buscamos un cliente por dni
@@ -108,14 +135,19 @@ public class ClientService implements IClientService{
     }
 
     @Override
-    public Page<ClientDTO> page(String search, Long clientId, Pageable pageable) {
-        boolean hasSearch = search != null && !search.isBlank();
-
-        if (!hasSearch && clientId == null) return page(pageable);
-        if (!hasSearch) return clientRepository.findByClient_Id(clientId, pageable).map(Mapper::toClientDto);
-        String q = search.trim();
-        if (clientId == null) return clientRepository.findByNameContainingIgnoreCase(q, pageable).map(Mapper::toClientDto);
-        return clientRepository.findByClient_Id(clientId, pageable).map(Mapper::toClientDto);
-
+    public Map<String, Long> countsByCity() {
+        return clientRepository.countsByCity().stream()
+                .collect(Collectors.toMap(
+                        c -> c.getCity() == null || c.getCity().isBlank() ? "Sin ciudad" : c.getCity().trim(),
+                        CityClientCount::getCnt,
+                        Long::sum,
+                        LinkedHashMap::new));
     }
+
+    @Override
+    public long countClients() {
+        return clientRepository.count();
+    }
+
+
 }
