@@ -21,21 +21,21 @@ public class ClientDTO {
     private String dni;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Pattern(regexp = "[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}+", message = "El nombre solo puede contener letras")
+    @Pattern(regexp = "[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}", message = "El nombre solo puede contener letras")
     private String name;
 
-    @Pattern(regexp = "[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}+", message = "El segundo nombre solo puede contener letras y espacios")
+    @Pattern(regexp = "|[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}", message = "El segundo nombre solo puede contener letras y espacios")
     private String secondName;
 
     @NotBlank(message = "El apellido es obligatorio")
-    @Pattern(regexp = "[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}+", message = "El apellido solo puede contener letras")
+    @Pattern(regexp = "[A-Za-záéíóúÁÉÍÓÚñÑ]{2,50}", message = "El apellido solo puede contener letras")
     private String lastName;
 
     @NotBlank(message = "El telefono es obligatorio")
     @Pattern(regexp = "\\d{10}", message = "El telefono debe tener 10 digitos")
     private String telephoneNumber;
 
-    @Pattern(regexp = "\\d{6,15}", message = "Telefono alternativo invalido")
+    @Pattern(regexp = "|\\d{6,15}", message = "Telefono alternativo invalido")
     private String secondTelephoneNumber;
 
     @NotBlank(message = "El email es obligatorio")

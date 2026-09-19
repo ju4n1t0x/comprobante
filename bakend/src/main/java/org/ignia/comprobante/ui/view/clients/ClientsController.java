@@ -107,21 +107,44 @@ public class ClientsController implements SectionView {
     }
 
     private void openCreate() {
-
-            new ClientFormDialog(null).showAndWait().ifPresent(dto -> {
-                clientService.saveClient(dto);
-                currentPage = 0;
-                reload();
-                navigationService.refreshSidebar();
-            });
+            ClientDTO existing = null;
+            while(true) {
+                Optional<ClientDTO> result = new ClientFormDialog(existing).showAndWait();
+                if (result.isEmpty()) return;
+                try {
+                    clientService.saveClient(result.get());
+                    currentPage = 0;
+                    reload();
+                    navigationService.refreshSidebar();
+                    return;
+                } catch (ConflictException ex) {
+                    showDuplicate(ex.getMessage());
+                    existing = result.get();
+                } catch (IllegalStateException ex) {
+                    showError(ex.getMessage());
+                    existing = result.get();
+                }
+            }
     }
 
     private void openEdit(ClientDTO dto) {
-            new ClientFormDialog(dto).showAndWait().ifPresent(updated -> {
-                clientService.updateClient(dto.getId(), updated);
-                reload();
-                navigationService.refreshSidebar();
-            });
+            ClientDTO existing = dto;
+            while(true) {
+                Optional<ClientDTO> result = new ClientFormDialog(existing).showAndWait();
+                if (result.isEmpty()) return;
+                try {
+                    clientService.updateClient(dto.getId(), result.get());
+                    reload();
+                    navigationService.refreshSidebar();
+                    return;
+                } catch (ConflictException ex) {
+                    showDuplicate(ex.getMessage());
+                    existing = result.get();
+                } catch (IllegalStateException ex) {
+                    showError(ex.getMessage());
+                    existing = result.get();
+                }
+            }
     }
 
     private void delete(ClientDTO dto) {
@@ -155,7 +178,7 @@ public class ClientsController implements SectionView {
 
     private void styleDialog(Dialog<?> dialog) {
             dialog.getDialogPane().getStyleClass().add("app-dialog");
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theeme.css").toExternalForm());
+            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
     }
 
     private void onSearch(String q) {
@@ -168,6 +191,14 @@ public class ClientsController implements SectionView {
         Page<ClientDTO> page = clientService.page(searchText, cityFilter, PageRequest.of(currentPage, PAGE_SIZE));
         dataCard.setData(PageData.of(page.getContent(), page.getNumber(),
                 page.getTotalPages(), page.getSize(), page.getTotalElements()));
+    }
+
+    private void showDuplicate(String message) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
+            styleDialog(alert);
+            alert.setTitle("Cliente duplicado");
+            alert.setHeaderText("Ya existe un cliente con ese DNI");
+            alert.showAndWait();
     }
 }
 

@@ -14,7 +14,7 @@ public interface ClientRepository extends JpaRepository<ClientModel, Long> {
 
     //metodo para filtrar clientes por dni
     @Query("SELECT c FROM ClientModel c WHERE c.dni = ?1")
-    Optional<ClientModel> findByDni(String dni);
+    List<ClientModel> findAllByDni(String dni);
 
     @Query("""
             SELECT c FROM ClientModel c WHERE LOWER(c.name)

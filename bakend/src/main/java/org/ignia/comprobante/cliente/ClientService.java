@@ -1,5 +1,6 @@
 package org.ignia.comprobante.cliente;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Validator;
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
@@ -31,11 +32,11 @@ public class ClientService implements IClientService{
                     .sorted().collect(Collectors.joining(", "));
             throw new IllegalStateException(msg);
         }
-        clientRepository.findByDni(dto.getDni().trim())
-                .filter(c -> dto.getId() == null || !c.getId().equals(dto.getId()))
-                .ifPresent(c -> {
-                    throw new ConflictException("Ya existe un cliente con el dni " + dto.getDni());
-                });
+        boolean duplicate = clientRepository.findAllByDni(dto.getDni().trim()).stream()
+                .anyMatch(c -> dto.getId() == null || !c.getId().equals(dto.getId()));
+        if (duplicate) {
+            throw new ConflictException("Ya existe un cliente con el dni " + dto.getDni());
+        }
     }
 
     //traemos el listado de clientes
@@ -116,6 +117,7 @@ public class ClientService implements IClientService{
     }
 
     //eliminamos un cliente
+    @Transactional
     @Override
     public void deleteClient(Long id) {
         ClientModel clientModel = clientRepository.findById(id)
@@ -129,9 +131,11 @@ public class ClientService implements IClientService{
     //buscamos un cliente por dni
     @Override
     public ClientDTO findByDni(String dni) {
-        ClientModel client = clientRepository.findByDni(dni)
-                .orElseThrow(() -> new NotFoundException("No existe el cliente con dni " + dni));
-        return Mapper.toClientDto(client);
+        return clientRepository.findAllByDni(dni).stream()
+                .findFirst()
+                .map(Mapper::toClientDto)
+                .orElseThrow(() -> new NotFoundException("No existe el cliente con dni" + dni));
+
     }
 
     @Override

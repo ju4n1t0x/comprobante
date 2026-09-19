@@ -6,6 +6,7 @@ public class Mapper {
         if (clientModel == null) return null;
 
         return ClientDTO.builder()
+                .id(clientModel.getId())
                 .dni(clientModel.getDni())
                 .name(clientModel.getName())
                 .secondName(clientModel.getSecondName())

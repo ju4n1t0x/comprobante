@@ -100,10 +100,7 @@ public class ClientFormDialog extends Dialog<ClientDTO> {
             provinceField.setText(existing.getProvince() == null ? "" : existing.getProvince());
             postalCodeField.setText(existing.getPostalCode() == null ? "" : existing.getPostalCode());
             cityField.setText(existing.getCity() == null ? "" : existing.getCity());
-            addressField.textProperty().addListener((o, a, b) -> {
-                boolean ok = ok(b, "[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 .,'\\-°º]{3,100}");
-                addressError.setText(ok ? "" : "Letras, números y espacios (3-100)");
-            });
+            addressField.setText(existing.getAddress() == null ? "" : existing.getAddress());
             cuitField.setText(existing.getCuit() == null ? "" : existing.getCuit());
         }
 

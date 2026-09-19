@@ -104,6 +104,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
         ProductModel p = productRepository.findById(id).orElseThrow(()-> new NotFoundException("Producto no encontrado"));
         if (p.getItemSale() != null && !p.getItemSale().isEmpty()) throw new ConflictException("No se puede eliminar: tiene ventas asociadas");
