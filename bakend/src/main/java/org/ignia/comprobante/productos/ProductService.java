@@ -27,7 +27,7 @@ public class ProductService implements IProductService {
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(Mapper::toProductDTO)
+                .map(ProductMapper::toProductDTO)
                 .toList();
 
     }
@@ -35,7 +35,7 @@ public class ProductService implements IProductService {
     @Override
     public Page<ProductDto> page(Pageable pageable) {
         return productRepository.findAll(pageable)
-                .map(Mapper::toProductDTO);
+                .map(ProductMapper::toProductDTO);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
-                .map(Mapper::toProductDTO)
+                .map(ProductMapper::toProductDTO)
                 .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
     }
 
@@ -81,7 +81,7 @@ public class ProductService implements IProductService {
                 .active(productDto.isActive())
                 .build();
 
-        return Mapper.toProductDTO(productRepository.save(product));
+        return ProductMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ProductService implements IProductService {
             productModel.setCategoria(categoryService.getCategoryReference(productDto.getCategoryId()));
 
         }
-        return Mapper.toProductDTO(productRepository.save(productModel));
+        return ProductMapper.toProductDTO(productRepository.save(productModel));
     }
 
     @Override
@@ -132,9 +132,9 @@ public class ProductService implements IProductService {
     public Page<ProductDto> page(String search, Long categoryId, Pageable pageable) {
         boolean hasSearch = search != null && !search.isBlank();
         if (!hasSearch && categoryId == null) return page(pageable);
-        if (!hasSearch) return productRepository.findByCategoria_Id(categoryId, pageable).map(Mapper::toProductDTO);
+        if (!hasSearch) return productRepository.findByCategoria_Id(categoryId, pageable).map(ProductMapper::toProductDTO);
         String q = search.trim();
-        if (categoryId == null) return productRepository.findByNameProductContainingIgnoreCase(q, pageable).map(Mapper::toProductDTO);
-        return productRepository.findByCategoria_IdAndNameProductContainingIgnoreCase(categoryId, q, pageable).map(Mapper::toProductDTO);
+        if (categoryId == null) return productRepository.findByNameProductContainingIgnoreCase(q, pageable).map(ProductMapper::toProductDTO);
+        return productRepository.findByCategoria_IdAndNameProductContainingIgnoreCase(categoryId, q, pageable).map(ProductMapper::toProductDTO);
     }
 }

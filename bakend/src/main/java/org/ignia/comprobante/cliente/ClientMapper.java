@@ -1,6 +1,6 @@
 package org.ignia.comprobante.cliente;
 
-public class Mapper {
+public class ClientMapper {
 
     public static ClientDTO toClientDto(ClientModel clientModel) {
         if (clientModel == null) return null;

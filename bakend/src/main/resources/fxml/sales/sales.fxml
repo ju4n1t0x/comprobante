@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.ignia.comprobante.ui.view.sales.SalesController"
+      styleClass="view-root">
+
+    <StackPane fx:id="toolbarSlot"/>
+    <StackPane fx:id="contentSlot" VBox.vgrow="ALWAYS"/>
+
+</VBox>

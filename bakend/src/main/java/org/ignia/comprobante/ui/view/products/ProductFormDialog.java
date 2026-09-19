@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 import org.ignia.comprobante.categories.CategoryDto;
-import org.ignia.comprobante.categories.CategoryModel;
 import org.ignia.comprobante.productos.ProductDto;
 
 import java.math.BigDecimal;

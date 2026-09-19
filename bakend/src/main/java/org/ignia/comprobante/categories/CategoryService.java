@@ -3,7 +3,6 @@ package org.ignia.comprobante.categories;
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
 import org.ignia.comprobante.productos.CategoryProductCount;
-import org.ignia.comprobante.productos.IProductService;
 import org.ignia.comprobante.productos.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

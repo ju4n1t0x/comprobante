@@ -4,7 +4,7 @@ package org.ignia.comprobante.cliente;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.ignia.comprobante.ventas.SalesDTO;
+import org.ignia.comprobante.sales.SaleDTO;
 
 import java.util.List;
 
@@ -64,6 +64,6 @@ public class ClientDTO {
 
     private String cuit;
 
-    private List<SalesDTO> listSales;
+    private List<SaleDTO> listSales;
 
 }

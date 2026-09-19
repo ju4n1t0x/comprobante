@@ -42,7 +42,7 @@ public class ClientService implements IClientService{
     //traemos el listado de clientes
     @Override
     public List<ClientDTO> getAllClients() {
-        return clientRepository.findAll().stream().map(Mapper::toClientDto).toList();
+        return clientRepository.findAll().stream().map(ClientMapper::toClientDto).toList();
     }
 
     @Override
@@ -54,11 +54,11 @@ public class ClientService implements IClientService{
     public Page<ClientDTO> page(String search, String city, Pageable pageable) {
         boolean hasSearch = search != null && !search.isBlank();
         boolean hasCity = city != null && !city.isBlank();
-        if (!hasSearch && !hasCity) return clientRepository.findAll(pageable).map(Mapper::toClientDto);
-        if (!hasSearch) return clientRepository.findByCityIgnoreCase(city.trim(), pageable).map(Mapper::toClientDto);
+        if (!hasSearch && !hasCity) return clientRepository.findAll(pageable).map(ClientMapper::toClientDto);
+        if (!hasSearch) return clientRepository.findByCityIgnoreCase(city.trim(), pageable).map(ClientMapper::toClientDto);
         String q = search.trim();
-        if (!hasCity) return clientRepository.search(q, pageable).map(Mapper::toClientDto);
-        return clientRepository.searchInCity(q, city.trim(), pageable).map(Mapper::toClientDto);
+        if (!hasCity) return clientRepository.search(q, pageable).map(ClientMapper::toClientDto);
+        return clientRepository.searchInCity(q, city.trim(), pageable).map(ClientMapper::toClientDto);
     }
 
     //traemos un cliente por id
@@ -68,7 +68,7 @@ public class ClientService implements IClientService{
         if (!client.isPresent()) {
             throw new RuntimeException("No existe el cliente con dni" + id);
         }
-        return Mapper.toClientDto(client.get());
+        return ClientMapper.toClientDto(client.get());
     }
 
     //guardamos un cliente
@@ -90,7 +90,7 @@ public class ClientService implements IClientService{
                 .cuit(clientDTO.getCuit())
                 .build();
 
-        return Mapper.toClientDto(clientRepository.save(clientModel));
+        return ClientMapper.toClientDto(clientRepository.save(clientModel));
     }
 
     //actualizamos un cliente
@@ -113,7 +113,7 @@ public class ClientService implements IClientService{
         clientModel.setAddress(clientDTO.getAddress());
         clientModel.setCuit(clientDTO.getCuit());
 
-        return Mapper.toClientDto(clientRepository.save(clientModel));
+        return ClientMapper.toClientDto(clientRepository.save(clientModel));
     }
 
     //eliminamos un cliente
@@ -133,7 +133,7 @@ public class ClientService implements IClientService{
     public ClientDTO findByDni(String dni) {
         return clientRepository.findAllByDni(dni).stream()
                 .findFirst()
-                .map(Mapper::toClientDto)
+                .map(ClientMapper::toClientDto)
                 .orElseThrow(() -> new NotFoundException("No existe el cliente con dni" + dni));
 
     }

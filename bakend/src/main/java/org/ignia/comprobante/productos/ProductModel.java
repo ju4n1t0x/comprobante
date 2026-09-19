@@ -2,7 +2,7 @@ package org.ignia.comprobante.productos;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.ignia.comprobante.itemVenta.ItemSaleModel;
+import org.ignia.comprobante.itemSales.ItemSaleModel;
 import org.ignia.comprobante.categories.CategoryModel;
 
 import java.math.BigDecimal;

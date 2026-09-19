@@ -1,12 +1,9 @@
-package org.ignia.comprobante.itemVenta;
+package org.ignia.comprobante.itemSales;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ignia.comprobante.productos.ProductModel;
-import org.ignia.comprobante.ventas.SaleModel;
+import org.ignia.comprobante.sales.SaleModel;
 
 import java.math.BigDecimal;
 
@@ -15,23 +12,22 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ItemSaleModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nameItem;
     private Integer quantity;
     private BigDecimal unitPrice;
-    @Transient
-    private BigDecimal totalPrice;
-
 
     //relacion con producto
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductModel product;
 
     //relacion con venta
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private SaleModel sale;
 
 }

@@ -3,7 +3,7 @@ package org.ignia.comprobante.productos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class Mapper {
+public class ProductMapper {
 
     public static ProductDto toProductDTO(ProductModel productModel) {
         if (productModel == null) return null;

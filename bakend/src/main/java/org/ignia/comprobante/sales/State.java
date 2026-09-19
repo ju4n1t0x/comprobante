@@ -1,4 +1,4 @@
-package org.ignia.comprobante.ventas;
+package org.ignia.comprobante.sales;
 
 public enum State {
 

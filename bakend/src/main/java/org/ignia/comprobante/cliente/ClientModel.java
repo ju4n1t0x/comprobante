@@ -2,7 +2,7 @@ package org.ignia.comprobante.cliente;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.ignia.comprobante.ventas.SaleModel;
+import org.ignia.comprobante.sales.SaleModel;
 
 import java.util.List;
 
