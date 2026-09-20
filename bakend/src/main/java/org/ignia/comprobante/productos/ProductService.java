@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.ignia.comprobante.categories.ICategoryService;
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService implements IProductService {
 
-    private final ProductRepository productRepository;
-    private final ICategoryService categoryService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ICategoryService categoryService;
 
-    public ProductService(ProductRepository productRepository, ICategoryService categoryService) {
-        this.productRepository = productRepository;
-        this.categoryService = categoryService;
-    }
 
     @Override
     public List<ProductDto> getAllProducts() {

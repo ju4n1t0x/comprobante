@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ISalesService {
 
@@ -21,5 +22,9 @@ public interface ISalesService {
     SaleDTO updateSale(Long id, SaleDTO saleDTO);
 
     void deleteSale(Long id);
+
+    long countByState(State state);
+
+    Map<State, Long> countGroupedByState();
 
 }

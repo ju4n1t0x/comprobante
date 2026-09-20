@@ -26,7 +26,15 @@ public class SaleDTO {
     private State state;
 
     //relacion con cliente
-    private ClientDTO client;
+    private Long clientId;
+    private String nameClient;
+    private String dniClient;
+    private String cityClient;
+    private String stateClient;
+
+    //relacion con usuario
+    private Long userId;
+    private String userName;
 
     //relacion con item venta
     @Builder.Default

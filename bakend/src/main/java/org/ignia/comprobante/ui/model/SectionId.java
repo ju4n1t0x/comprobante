@@ -8,6 +8,7 @@ public enum SectionId {
     REPORTES("Reportes"),
     COTIZAR("Cotizar cubierta");
 
+
     private final String label;
 
     SectionId(String label) {

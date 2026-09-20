@@ -14,7 +14,6 @@ public final class SaleMapper {
     private SaleMapper(){
     }
 
-    private static final BigDecimal IVA_RATE = new BigDecimal("0.21");
 
     public static SaleDTO toSaleDTO(SaleModel saleModel) {
 
@@ -25,47 +24,26 @@ public final class SaleMapper {
                 .map(ItemSaleMapper::toItemSaleDTO)
                 .toList();
 
-        BigDecimal baseImponible = items.stream()
-                .map(ItemSaleDTO::getSubTotal)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal discount = saleModel.getDiscount();
-
-        BigDecimal iva = calcIva(baseImponible);
-
-        BigDecimal total = calcTotal(baseImponible, iva, discount);
 
         return SaleDTO.builder()
                 .id(saleModel.getId())
                 .typeIva(saleModel.getTypeIva())
-                .baseImponible(baseImponible)
-                .discount(discount)
-                .iva(iva)
-                .totalPrice(total)
+                .baseImponible(saleModel.getBaseImponible())
+                .discount(saleModel.getDiscount())
+                .iva(saleModel.getIva())
+                .totalPrice(saleModel.getTotalPrice())
                 .date(saleModel.getDate())
                 .state(saleModel.getState())
                 .itemsSales(items)
+                .clientId(saleModel.getClient().getId())
+                .nameClient(saleModel.getClient().getName())
+                .dniClient(saleModel.getClient().getDni())
+                .cityClient(saleModel.getClient().getCity())
+                .stateClient(saleModel.getClient().getAddress())
+                .userId(saleModel.getUser().getId())
+                .userName(saleModel.getUser().getUserName())
                 .build();
     }
 
-    private static BigDecimal calcIva(BigDecimal baseImponible) {
-        if (baseImponible == null) return BigDecimal.ZERO;
-        return baseImponible.multiply(IVA_RATE);
-    }
-
-    private static BigDecimal calcTotal(BigDecimal baseImponible, BigDecimal iva, BigDecimal discount) {
-        if (baseImponible == null) return BigDecimal.ZERO;
-        BigDecimal total = baseImponible;
-
-        if (iva !=null){
-            total = total.add(iva);
-        }
-
-        if (discount != null) {
-            total = total.subtract(discount);
-        }
-        return total;
-    }
 
 }
