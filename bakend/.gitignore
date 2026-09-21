@@ -1,0 +1,24 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Backend
+bakend/target/
+bakend/data/*.db
+bakend/data/*.trace.db
+bakend/data/*.lock.db
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
