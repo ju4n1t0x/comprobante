@@ -20,6 +20,7 @@ public class UserModel {
     private String userName;
     private String password;
     private String email;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private String telephoneNumber;
     private String secondTelephoneNumber;

@@ -6,10 +6,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.ignia.comprobante.security.SessionService;
 import org.ignia.comprobante.ui.SpringFXMLLoader;
+import org.ignia.comprobante.ui.view.security.LoginDialog;
+import org.ignia.comprobante.user.IUserService;
+import org.ignia.comprobante.user.UserModel;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Optional;
 
 public class JavaFxApplication extends Application {
 
@@ -27,6 +34,20 @@ public class JavaFxApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         loadFonts();
 
+        //Login
+        IUserService userService = context.getBean(IUserService.class);
+        BCryptPasswordEncoder encoder = context.getBean(BCryptPasswordEncoder.class);
+        LoginDialog loginDialog = new LoginDialog(userService, encoder);
+        Optional<UserModel> user = loginDialog.showAndWait();
+
+        if (user.isEmpty()){
+            Platform.exit();
+            return;
+        }
+
+        context.getBean(SessionService.class).login(user.get());
+
+        //cargar ui principal
         SpringFXMLLoader loader = context.getBean(SpringFXMLLoader.class);
 
         Parent root = loader.load("/fxml/main-gate.fxml");

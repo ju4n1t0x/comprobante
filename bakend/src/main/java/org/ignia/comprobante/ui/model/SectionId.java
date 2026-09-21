@@ -5,6 +5,7 @@ public enum SectionId {
     PRODUCTOS("Productos"),
     CATEGORIAS("Categorías"),
     CLIENTES("Clientes"),
+    USUARIOS("Usuarios"),
     REPORTES("Reportes"),
     COTIZAR("Cotizar cubierta");
 

@@ -19,5 +19,9 @@ public interface IUserService {
 
     void delete(Long id);
 
+    UserModel authenticate(String userEmail, String password);
+
+    String hashPassword(String rawPassword);
+
 
 }

@@ -8,7 +8,6 @@ public class UserMapper {
         return UserDTO.builder()
                 .id(userModel.getId())
                 .userName(userModel.getUserName())
-                .password(userModel.getPassword())
                 .email(userModel.getEmail())
                 .role(userModel.getRole())
                 .telephoneNumber(userModel.getTelephoneNumber())

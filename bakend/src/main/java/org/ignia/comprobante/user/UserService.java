@@ -3,6 +3,7 @@ package org.ignia.comprobante.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public class UserService implements IUserService{
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDTO> findAll() {
@@ -45,7 +48,7 @@ public class UserService implements IUserService{
 
         UserModel userModel = UserModel.builder()
                 .userName(user.getUserName())
-                .password(user.getPassword())
+                .password(passwordEncoder.encode(user.getPassword()))
                 .email(user.getEmail())
                 .role(user.getRole())
                 .telephoneNumber(user.getTelephoneNumber())
@@ -65,7 +68,7 @@ public class UserService implements IUserService{
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         userModel.setUserName(user.getUserName());
-        userModel.setPassword(user.getPassword());
+        userModel.setPassword(passwordEncoder.encode(user.getPassword()));
         userModel.setEmail(user.getEmail());
         userModel.setRole(user.getRole());
         userModel.setTelephoneNumber(user.getTelephoneNumber());
@@ -83,6 +86,23 @@ public class UserService implements IUserService{
         UserModel userModel = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         userRepository.delete(userModel);
+    }
+
+    @Override
+    public UserModel authenticate(String userEmail, String password) {
+        UserModel user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())){
+            throw new RuntimeException("Contraseña incorrectos");
+        } else {
+            return user;
+        }
+    }
+
+    @Override
+    public String hashPassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
     }
 
 }

@@ -2,12 +2,14 @@ package org.ignia.comprobante.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
+import org.ignia.comprobante.security.SessionService;
 import org.ignia.comprobante.ui.components.SidebarMenu;
 import org.ignia.comprobante.ui.components.TopNavBar;
 import org.ignia.comprobante.ui.model.SectionId;
 import org.ignia.comprobante.ui.model.TabDef;
 import org.ignia.comprobante.ui.model.UserChip;
 import org.ignia.comprobante.ui.shell.SectionRegistry;
+import org.ignia.comprobante.user.UserModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,26 +23,35 @@ public class MainGateController {
 
     private final NavigationService navigation;
     private final SectionRegistry registry;
+    private final SessionService sessionService;
 
-    public MainGateController(NavigationService navigation, SectionRegistry registry) {
+    public MainGateController(NavigationService navigation, SectionRegistry registry, SessionService sessionService) {
         this.navigation = navigation;
         this.registry = registry;
+        this.sessionService = sessionService;
     }
 
     @FXML
     private void initialize() {
+        UserModel user = sessionService.getCurrentUser();
+
         SidebarMenu sidebar = new SidebarMenu();
         sidebarSlot.getChildren().setAll(sidebar);
 
         List<TabDef> tabs = registry.sections().stream()
                 .map(id -> new TabDef(id, id.label()))
                 .toList();
-        TopNavBar nav = new TopNavBar(tabs, new UserChip("Usuario", "Rol", "U"), navigation::openSection);
+
+        //user badge navbar
+        String initials = user.getUserName().substring(0,1).toUpperCase();
+        TopNavBar nav = new TopNavBar(tabs, new UserChip(user.getUserName(), user.getRole().name(), initials), navigation::openSection);
         navBarSlot.getChildren().setAll(nav);
 
         navigation.bind(contentPane, sidebar);
 
-        nav.setActive(SectionId.CATEGORIAS);
-        navigation.openSection(SectionId.CATEGORIAS);
+        SectionId first = registry.sections().getFirst();
+
+        nav.setActive(first);
+        navigation.openSection(first);
     }
 }

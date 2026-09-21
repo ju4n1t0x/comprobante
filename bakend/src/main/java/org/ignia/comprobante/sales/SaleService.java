@@ -1,5 +1,7 @@
 package org.ignia.comprobante.sales;
 
+import jakarta.persistence.Table;
+import org.ignia.comprobante.security.SessionService;
 import org.springframework.transaction.annotation.Transactional;
 import org.ignia.comprobante.cliente.ClientModel;
 import org.ignia.comprobante.cliente.ClientRepository;
@@ -35,9 +37,13 @@ public class SaleService implements ISalesService{
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private SessionService sessionService;
+
     private static final BigDecimal IVA_RATE = new BigDecimal("0.21");
 
     @Override
+    @Transactional(readOnly = true)
     public List<SaleDTO> getAllSales() {
         return saleRepository.findAll()
                 .stream()
@@ -46,17 +52,20 @@ public class SaleService implements ISalesService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<SaleDTO> page(Pageable pageable) {
         return saleRepository.findAll(pageable)
                 .map(SaleMapper::toSaleDTO);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<SaleDTO> page(String search, Pageable pageable) {
         return saleRepository.search(search, pageable).map(SaleMapper::toSaleDTO);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SaleDTO getById(Long id) {
         return saleRepository.findById(id)
                 .map(SaleMapper::toSaleDTO)
@@ -80,8 +89,7 @@ public class SaleService implements ISalesService{
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
         //buscar el usuario
-        UserModel user = userRepository.findById(saleDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserModel user = sessionService.getCurrentUser();
 
 
         //creamos la venta
@@ -174,6 +182,7 @@ public class SaleService implements ISalesService{
     }
 
     @Override
+    @Transactional
     public void deleteSale(Long id) {
         SaleModel sale = saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
