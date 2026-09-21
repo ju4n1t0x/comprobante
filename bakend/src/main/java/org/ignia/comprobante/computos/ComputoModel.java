@@ -1,27 +1,29 @@
 package org.ignia.comprobante.computos;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.ignia.comprobante.ItemComputo.ItemComputoModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ComputoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
-    private Double covered;
-    private Double semiCovered;
-    private Double total;
+
+    private String description;
+
+    @OneToMany(mappedBy = "computo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ItemComputoModel> items = new ArrayList<>();
 
 }

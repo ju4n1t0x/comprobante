@@ -44,7 +44,8 @@ public class SectionRegistry {
             case SELLER -> id == SectionId.VENTAS
                         || id == SectionId.CLIENTES
                         || id == SectionId.PRODUCTOS
-                        || id == SectionId.CATEGORIAS;
+                        || id == SectionId.CATEGORIAS
+                        || id == SectionId.COTIZAR;
         };
     }
 
