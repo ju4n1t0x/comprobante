@@ -40,8 +40,17 @@ public class ClientSectionProvider  implements SectionProvider {
 
         List<SidebarItem> items = new ArrayList<>();
         items.add(new SidebarItem("all", "Todos los clientes", total, SidebarItem.Tone.DEFAULT));
-        countsByCity.forEach((city, cnt) ->
-                items.add(new SidebarItem("city-" + city, city, cnt, SidebarItem.Tone.DEFAULT)));
+        countsByCity.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER))
+                .forEach(entry -> items.add(
+                        new SidebarItem(
+                                "city-" + entry.getKey(),
+                                entry.getKey(),
+                                entry.getValue(),
+                                SidebarItem.Tone.DEFAULT
+                        ))
+                );
 
         return new SidebarConfig("Clientes", items,
                 new SummaryCard("Padron", String.valueOf(total), "clientes activos"));

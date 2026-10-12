@@ -13,6 +13,7 @@ import org.ignia.comprobante.productos.ProductDto;
 import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DataCard;
+import org.ignia.comprobante.ui.components.DialogTheme;
 import org.ignia.comprobante.ui.model.*;
 import org.ignia.comprobante.ui.shell.SectionView;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -162,8 +163,7 @@ public class ProductsController implements SectionView {
     }
 
     private void styleDialog(Dialog<?> dialog) {
-        dialog.getDialogPane().getStyleClass().add("app-dialog");
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
+        DialogTheme.apply(dialog);
     }
 
     private void onSearch(String q) {

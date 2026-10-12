@@ -1,6 +1,7 @@
 package org.ignia.comprobante.ui.components;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -16,6 +17,7 @@ public class SidebarMenu extends VBox {
     private final Label titleLabel = new Label();
     private final VBox itemsBox = new VBox();
     private final VBox summaryCard = new VBox();
+    private final ScrollPane itemsScroll = new ScrollPane(itemsBox);
 
     private Consumer<SidebarItem> onSelect;
     private HBox activeRow;
@@ -25,8 +27,16 @@ public class SidebarMenu extends VBox {
         titleLabel.getStyleClass().add("sidebar-title");
         itemsBox.getStyleClass().add("sidebar-items");
         summaryCard.getStyleClass().add("summary-card");
-        getChildren().addAll(titleLabel, itemsBox, summaryCard);
-        VBox.setVgrow(itemsBox, Priority.ALWAYS);
+        itemsScroll.getStyleClass().add("sidebar-scroll");
+        itemsScroll.setFitToWidth(true);
+        itemsScroll.setPannable(true);
+        itemsScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        itemsScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        itemsBox.setFillWidth(true);
+
+        getChildren().addAll(titleLabel, itemsScroll, summaryCard);
+        VBox.setVgrow(itemsScroll, Priority.ALWAYS);
     }
 
     public void setOnSelect(Consumer<SidebarItem> onSelect) {

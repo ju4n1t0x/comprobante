@@ -176,6 +176,23 @@
     -fx-font-size: 11px;
 }
 
+.sidebar-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.sidebar-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.sidebar-scroll > .scroll-bar:vertical,
+.sidebar-scroll > .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
 /* ============ Views / content ============ */
 .view-root {
     -fx-background-color: -bg-0;
@@ -402,32 +419,32 @@
 }
 
 /* ============ Dialogs ============ */
-.app-dialog {
+.dialog-pane {
     -fx-background-color: -bg-1;
 }
 
-.app-dialog .header-panel {
+.dialog-pane .header-panel {
     -fx-background-color: -bg-2;
 }
 
-.app-dialog .label {
+.dialog-pane .label {
     -fx-text-fill: -text;
 }
 
-.app-dialog .text-field {
+.dialog-pane .text-field {
     -fx-background-color: -bg-0;
     -fx-border-color: -line;
     -fx-text-fill: -text;
     -fx-prompt-text-fill: -muted;
 }
 
-.app-dialog .button {
+.dialog-pane .button {
     -fx-background-color: -bg-3;
     -fx-text-fill: -text;
     -fx-cursor: hand;
 }
 
-.app-dialog .choice-box {
+.dialog-pane .choice-box {
     -fx-background-color: -bg-0;
     -fx-border-color: -line;
     -fx-border-radius: 4;
@@ -435,7 +452,7 @@
     -fx-padding: 4 8 4 8;
 }
 
-.app-dialog .choice-box > .label {
+.dialog-pane .choice-box > .label {
     -fx-text-fill: -text;
 }
 
@@ -456,17 +473,17 @@
     -fx-background-color: -bg-3;
 }
 
-.app-dialog .check-box {
+.dialog-pane .check-box {
     -fx-text-fill: -text;
 }
 
-.app-dialog .check-box .box {
+.dialog-pane .check-box .box {
     -fx-background-color: -bg-0;
     -fx-border-color: -line;
     -fx-border-radius: 3;
 }
 
-.app-dialog .check-box:selected > box > .mark {
+.dialog-pane .check-box:selected > box > .mark {
     -fx-background-color: -accent;
 }
 
@@ -476,9 +493,207 @@
     -fx-font-size: 11px;
 }
 
-.app-dialog .text-field:error {
+.dialog-pane .text-field:error {
     -fx-border-color: -danger;
 }
 
+.dialog-pane .scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.dialog-pane .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.dialog-pane .combo-box {
+    -fx-background-color: -bg-0;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.dialog-pane .combo-box > .list-cell{
+    -fx-text-fill: -text;
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .combo-box > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .combo-box .arrow {
+    -fx-background-color:  -text;
+}
+
+.combo-popup .list-view {
+    -fx-background-color: -bg-2;
+    -fx-border-color: -line;
+}
+
+.combo-popup .list-cell {
+    -fx-background-color: -bg-2;
+    -fx-text-fill: -text;
+}
+
+.combo-popup .list-cell:hover,
+.combo-popup .list-cell:selected {
+    -fx-background-color: -bg-3;
+}
 
 
+/* ============ Cotización ============ */
+
+.quote-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.quote-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.quote-content {
+    -fx-background-color: -bg-0;
+    -fx-padding: 2;
+}
+
+.quote-input-card,
+.quote-result-card {
+    -fx-background-color: -bg-1;
+    -fx-background-radius: 8;
+    -fx-border-color: -line;
+    -fx-border-radius: 8;
+    -fx-padding: 20;
+}
+
+.quote-card-title {
+    -fx-text-fill: -text;
+    -fx-font-family: "Anton";
+    -fx-font-size: 20px;
+}
+
+.quote-card-subtitle {
+    -fx-text-fill: -muted;
+    -fx-font-size: 12px;
+}
+
+.quote-form {
+    -fx-background-color: -bg-2;
+    -fx-background-radius: 6;
+    -fx-border-color: -line;
+    -fx-border-radius: 6;
+    -fx-padding: 16;
+}
+
+.quote-label {
+    -fx-text-fill: -text;
+    -fx-font-size: 13px;
+}
+
+.quote-field {
+    -fx-background-color: -bg-0;
+    -fx-background-radius: 4;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-text-fill: -text;
+    -fx-prompt-text-fill: -muted;
+    -fx-padding: 8 10 8 10;
+}
+
+.quote-field:focused {
+    -fx-border-color: -accent;
+}
+
+.quote-combo {
+    -fx-background-color: -bg-0;
+    -fx-background-radius: 4;
+    -fx-border-color: -line;
+    -fx-border-radius: 4;
+    -fx-text-fill: -text;
+}
+
+.quote-combo .list-cell {
+    -fx-background-color: -bg-0;
+    -fx-text-fill: -text;
+}
+
+.quote-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.quote-combo .arrow {
+    -fx-background-color: -text;
+}
+
+.quote-result-list {
+    -fx-background-color: -bg-1;
+}
+
+.quote-result-header {
+    -fx-background-color: -bg-2;
+    -fx-border-color: transparent transparent -accent transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.quote-result-header .label {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 10px;
+}
+
+.quote-result-row {
+    -fx-border-color: transparent transparent -line transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.quote-result-row:hover {
+    -fx-background-color: -bg-2;
+}
+
+.quote-result-product {
+    -fx-text-fill: -text;
+    -fx-font-size: 12px;
+}
+
+.quote-result-unit {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 11px;
+}
+
+.quote-result-number {
+    -fx-text-fill: -text;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+    -fx-alignment: center-right;
+}
+
+.quote-summary {
+    -fx-background-color: -bg-2;
+    -fx-background-radius: 6;
+    -fx-padding: 14;
+    -fx-alignment: center-right;
+}
+
+.quote-summary-value {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+}
+
+.quote-total {
+    -fx-text-fill: -accent;
+    -fx-font-family: "Anton";
+    -fx-font-size: 22px;
+}
+
+.quote-empty {
+    -fx-text-fill: -muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 12px;
+    -fx-padding: 18 0 18 0;
+}

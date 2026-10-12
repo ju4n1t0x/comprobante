@@ -11,6 +11,7 @@ import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DataCard;
+import org.ignia.comprobante.ui.components.DialogTheme;
 import org.ignia.comprobante.ui.model.ActionBarConfig;
 import org.ignia.comprobante.ui.model.ButtonDef;
 import org.ignia.comprobante.ui.model.ColumnDef;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CategoriesController implements SectionView {
 
-    private static final int PAGE_SIZE = 8;
+    private static final int PAGE_SIZE = 12;
 
     @FXML private StackPane toolbarSlot;
     @FXML private StackPane contentSlot;
@@ -42,6 +43,7 @@ public class CategoriesController implements SectionView {
     private DataCard<CategoryDto> dataCard;
     private Long filter;
     private int currentPage;
+    private String searchText = "";
 
     public CategoriesController(ICategoryService categoryService, NavigationService navigation) {
         this.categoryService = categoryService;
@@ -52,8 +54,9 @@ public class CategoriesController implements SectionView {
     private void initialize() {
         navigation.registerView(this);
 
-        ActionBar bar = new ActionBar(new ActionBarConfig("CATÁLOGO · RUBROS", null,
+        ActionBar bar = new ActionBar(new ActionBarConfig("CATÁLOGO · RUBROS", "Buscar categoría por nombre",
                 List.of(new ButtonDef("+ Crear categoría", ButtonDef.Style.PRIMARY, this::openCreate))));
+        bar.setOnSearch(this::onSearch);
         toolbarSlot.getChildren().setAll(bar);
 
         dataCard = new DataCard<>("CATEGORÍAS", "Estructura de catálogo", columns(), rowActions());
@@ -80,7 +83,7 @@ public class CategoriesController implements SectionView {
     }
 
     private void reload() {
-        Page<CategoryDto> page = categoryService.page(filter, PageRequest.of(currentPage, PAGE_SIZE));
+        Page<CategoryDto> page = categoryService.page(searchText, filter, PageRequest.of(currentPage, PAGE_SIZE));
         dataCard.setData(PageData.of(page.getContent(), page.getNumber(),
                 page.getTotalPages(), page.getSize(), page.getTotalElements()));
     }
@@ -143,7 +146,12 @@ public class CategoriesController implements SectionView {
     }
 
     private void styleDialog(Dialog<?> dialog) {
-        dialog.getDialogPane().getStyleClass().add("app-dialog");
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
+        DialogTheme.apply(dialog);
+    }
+
+    private void onSearch(String search) {
+        searchText = search == null ? "" : search.trim();
+        currentPage = 0;
+        reload();
     }
 }

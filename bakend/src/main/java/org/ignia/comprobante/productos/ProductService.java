@@ -6,7 +6,9 @@ import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +23,15 @@ public class ProductService implements IProductService {
     @Autowired
     private ICategoryService categoryService;
 
+    private static final Sort PRODUCT_SORT = Sort.by(
+            Sort.Order.asc("nameProduct").ignoreCase(),
+            Sort.Order.asc("id")
+    );
+
 
     @Override
     public List<ProductDto> getAllProducts() {
-        return productRepository.findAll()
+        return productRepository.findAll(PRODUCT_SORT)
                 .stream()
                 .map(ProductMapper::toProductDTO)
                 .toList();
@@ -33,7 +40,12 @@ public class ProductService implements IProductService {
 
     @Override
     public Page<ProductDto> page(Pageable pageable) {
-        return productRepository.findAll(pageable)
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                PRODUCT_SORT
+        );
+        return productRepository.findAll(sortedPageable)
                 .map(ProductMapper::toProductDTO);
     }
 
@@ -129,11 +141,16 @@ public class ProductService implements IProductService {
 
     @Override
     public Page<ProductDto> page(String search, Long categoryId, Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                PRODUCT_SORT
+        );
         boolean hasSearch = search != null && !search.isBlank();
-        if (!hasSearch && categoryId == null) return page(pageable);
-        if (!hasSearch) return productRepository.findByCategoria_Id(categoryId, pageable).map(ProductMapper::toProductDTO);
+        if (!hasSearch && categoryId == null) return page(sortedPageable);
+        if (!hasSearch) return productRepository.findByCategoria_Id(categoryId, sortedPageable).map(ProductMapper::toProductDTO);
         String q = search.trim();
-        if (categoryId == null) return productRepository.findByNameProductContainingIgnoreCase(q, pageable).map(ProductMapper::toProductDTO);
-        return productRepository.findByCategoria_IdAndNameProductContainingIgnoreCase(categoryId, q, pageable).map(ProductMapper::toProductDTO);
+        if (categoryId == null) return productRepository.findByNameProductContainingIgnoreCase(q, sortedPageable).map(ProductMapper::toProductDTO);
+        return productRepository.findByCategoria_IdAndNameProductContainingIgnoreCase(categoryId, q, sortedPageable).map(ProductMapper::toProductDTO);
     }
 }

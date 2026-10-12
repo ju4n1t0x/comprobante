@@ -11,7 +11,7 @@ public interface ICategoryService {
 
     long countCategories();
 
-    Page<CategoryDto> page(Long categoryFilter, Pageable pageable);
+    Page<CategoryDto> page(String search, Long categoryFilter, Pageable pageable);
 
     CategoryDto getCategoryById(Long id);
 

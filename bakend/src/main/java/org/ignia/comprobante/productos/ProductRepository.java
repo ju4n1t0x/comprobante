@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
@@ -22,5 +23,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
     Page<ProductModel> findByCategoria_Id(Long categoryId, Pageable pageable);
     Page<ProductModel> findByNameProductContainingIgnoreCase(String name, Pageable pageable);
     Page<ProductModel> findByCategoria_IdAndNameProductContainingIgnoreCase(Long cateoriaId, String name, Pageable pageable);
+
+    Optional<ProductModel> findByProductUID(String productUID);
 
 }

@@ -9,6 +9,7 @@ import org.ignia.comprobante.security.SessionService;
 import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DataCard;
+import org.ignia.comprobante.ui.components.DialogTheme;
 import org.ignia.comprobante.ui.model.*;
 import org.ignia.comprobante.ui.shell.SectionView;
 import org.ignia.comprobante.user.IUserService;
@@ -155,8 +156,7 @@ public class UsersController implements SectionView {
         }
     }
     private void styleDialog(Dialog<?> dialog){
-        dialog.getDialogPane().getStyleClass().add("app-dialog");
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
+        DialogTheme.apply(dialog);
     }
 
     private void showError(String message){

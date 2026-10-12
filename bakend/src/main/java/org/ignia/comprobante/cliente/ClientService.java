@@ -5,7 +5,9 @@ import jakarta.validation.Validator;
 import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -18,6 +20,12 @@ public class ClientService implements IClientService{
 
     private final ClientRepository clientRepository;
     private final Validator validator;
+    private static final Sort CLIENT_SORT = Sort.by(
+            Sort.Order.asc("lastName").ignoreCase(),
+            Sort.Order.asc("name").ignoreCase(),
+            Sort.Order.asc("secondName").ignoreCase(),
+            Sort.Order.asc("dni").ignoreCase()
+    );
 
     public ClientService(ClientRepository clientRepository, Validator validator) {
         this.clientRepository = clientRepository;
@@ -42,7 +50,7 @@ public class ClientService implements IClientService{
     //traemos el listado de clientes
     @Override
     public List<ClientDTO> getAllClients() {
-        return clientRepository.findAll().stream().map(ClientMapper::toClientDto).toList();
+        return clientRepository.findAll(CLIENT_SORT).stream().map(ClientMapper::toClientDto).toList();
     }
 
     @Override
@@ -52,13 +60,18 @@ public class ClientService implements IClientService{
     //paginamos el listado de clientes
     @Override
     public Page<ClientDTO> page(String search, String city, Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                CLIENT_SORT
+        );
         boolean hasSearch = search != null && !search.isBlank();
         boolean hasCity = city != null && !city.isBlank();
-        if (!hasSearch && !hasCity) return clientRepository.findAll(pageable).map(ClientMapper::toClientDto);
-        if (!hasSearch) return clientRepository.findByCityIgnoreCase(city.trim(), pageable).map(ClientMapper::toClientDto);
+        if (!hasSearch && !hasCity) return clientRepository.findAll(sortedPageable).map(ClientMapper::toClientDto);
+        if (!hasSearch) return clientRepository.findByCityIgnoreCase(city.trim(), sortedPageable).map(ClientMapper::toClientDto);
         String q = search.trim();
-        if (!hasCity) return clientRepository.search(q, pageable).map(ClientMapper::toClientDto);
-        return clientRepository.searchInCity(q, city.trim(), pageable).map(ClientMapper::toClientDto);
+        if (!hasCity) return clientRepository.search(q, sortedPageable).map(ClientMapper::toClientDto);
+        return clientRepository.searchInCity(q, city.trim(), sortedPageable).map(ClientMapper::toClientDto);
     }
 
     //traemos un cliente por id

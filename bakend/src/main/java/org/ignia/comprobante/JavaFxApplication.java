@@ -27,6 +27,7 @@ public class JavaFxApplication extends Application {
         context = new SpringApplicationBuilder(ComprobanteApplication.class)
                 .web(WebApplicationType.NONE)
                 .run(getParameters().getRaw().toArray(new String[0]));
+
     }
 
 

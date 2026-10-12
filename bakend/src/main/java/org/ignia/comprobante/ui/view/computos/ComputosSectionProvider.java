@@ -1,6 +1,7 @@
 package org.ignia.comprobante.ui.view.computos;
 
-import org.ignia.comprobante.computos.IComputoService;
+
+import org.ignia.comprobante.computos.IComputoCatalogService;
 import org.ignia.comprobante.ui.model.SectionId;
 import org.ignia.comprobante.ui.model.SidebarConfig;
 import org.ignia.comprobante.ui.model.SidebarItem;
@@ -14,9 +15,10 @@ import java.util.List;
 @Component
 public class ComputosSectionProvider implements SectionProvider {
 
-    private final IComputoService computoService;
+    private final IComputoCatalogService computoService;
 
-    public ComputosSectionProvider(IComputoService computoService) {
+
+    public ComputosSectionProvider(IComputoCatalogService computoService) {
         this.computoService = computoService;
     }
 
@@ -45,7 +47,7 @@ public class ComputosSectionProvider implements SectionProvider {
                 new SummaryCard(
                         "Computos",
                         String.valueOf(total),
-                        "Total de cómputos"
+                        "Configurados"
                 )
         );
     }

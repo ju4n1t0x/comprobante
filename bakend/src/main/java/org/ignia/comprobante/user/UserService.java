@@ -2,7 +2,9 @@ package org.ignia.comprobante.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +18,14 @@ public class UserService implements IUserService{
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    private static final Sort USER_SORT = Sort.by(
+            Sort.Order.asc("userName").ignoreCase(),
+            Sort.Order.asc("id")
+    );
+
     @Override
     public List<UserDTO> findAll() {
-        return userRepository.findAll()
+        return userRepository.findAll(USER_SORT)
                 .stream()
                 .map(UserMapper::toUserDto)
                 .toList();
@@ -26,18 +33,28 @@ public class UserService implements IUserService{
 
     @Override
     public Page<UserDTO> page(Pageable pageable) {
-        return userRepository.findAll(pageable)
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                USER_SORT
+        );
+        return userRepository.findAll(sortedPageable)
                 .map(UserMapper::toUserDto);
     }
 
     @Override
     public Page<UserDTO> page(String search, Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                USER_SORT
+        );
         boolean hasSearch = search != null && !search.isBlank();
         if (hasSearch) {
-            return userRepository.findByUsernameContainingOrEmailContaining(search, search, pageable)
+            return userRepository.findByUsernameContainingOrEmailContaining(search, search, sortedPageable)
                     .map(UserMapper::toUserDto);
         } else {
-            return userRepository.findAll(pageable)
+            return userRepository.findAll(sortedPageable)
                     .map(UserMapper::toUserDto);
         }
 

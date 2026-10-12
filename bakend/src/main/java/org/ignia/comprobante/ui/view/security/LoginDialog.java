@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.ignia.comprobante.ui.components.DialogTheme;
 import org.ignia.comprobante.user.IUserService;
 import org.ignia.comprobante.user.UserModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,8 +22,7 @@ public class LoginDialog extends Dialog<UserModel> {
         setHeaderText(null);
 
         DialogPane pane = getDialogPane();
-        pane.getStyleClass().add("login-dialog");
-        pane.getStylesheets().add(getClass().getResource("/css/theme.css").toExternalForm());
+        DialogTheme.apply(this);
         pane.getButtonTypes().add(ButtonType.OK);
         pane.getButtonTypes().remove(ButtonType.CANCEL);
 
@@ -50,6 +50,7 @@ public class LoginDialog extends Dialog<UserModel> {
                     );
                 } catch (RuntimeException ex){
                     Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
+                    DialogTheme.apply(alert);
                     alert.showAndWait();
                 }
             }

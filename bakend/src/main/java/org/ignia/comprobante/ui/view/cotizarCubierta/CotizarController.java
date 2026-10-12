@@ -4,20 +4,25 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import org.ignia.comprobante.ItemComputo.ItemComputoDTO;
-import org.ignia.comprobante.computos.ComputoDTO;
-import org.ignia.comprobante.computos.IComputoService;
+import javafx.scene.layout.*;
+import org.ignia.comprobante.computos.IComputoCatalogService;
+import org.ignia.comprobante.computos.config.ComputoConfig;
+import org.ignia.comprobante.computos.config.ParameterConfig;
+import org.ignia.comprobante.computos.result.ComputedItem;
+import org.ignia.comprobante.computos.result.ComputedQuote;
 import org.ignia.comprobante.ui.NavigationService;
+import org.ignia.comprobante.ui.components.ActionBar;
+import org.ignia.comprobante.ui.components.DialogTheme;
+import org.ignia.comprobante.ui.model.ActionBarConfig;
 import org.ignia.comprobante.ui.model.SidebarItem;
 import org.ignia.comprobante.ui.shell.SectionView;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class CotizarController implements SectionView {
@@ -25,159 +30,417 @@ public class CotizarController implements SectionView {
     @FXML private StackPane toolbarSlot;
     @FXML private StackPane contentSlot;
 
-    private final IComputoService computoService;
+    private final IComputoCatalogService catalogService;
     private final NavigationService navigationService;
 
-    private ComboBox<ComputoDTO> computoBox;
-    private TextField alturaField;
-    private TextField largoField;
-    private TextField desperdicioField;
+    private ComboBox<ComputoConfig> computoBox;
+    private GridPane parameterForm;
     private VBox resultBox;
 
-    public CotizarController(IComputoService computoService, NavigationService navigationService) {
-        this.computoService = computoService;
+    private final Map<String, TextField> parameterFields =
+            new LinkedHashMap<>();
+
+    public CotizarController(
+            IComputoCatalogService catalogService,
+            NavigationService navigationService
+    ) {
+        this.catalogService = catalogService;
         this.navigationService = navigationService;
     }
 
     @FXML
     private void initialize() {
         navigationService.registerView(this);
-        computoBox = new ComboBox<>();
-        alturaField = new TextField();
-        largoField = new TextField();
-        desperdicioField = new TextField("0");
-        resultBox = new VBox(8);
 
-        List<ComputoDTO> computos = computoService.findAll();
-        computoBox.setItems(FXCollections.observableArrayList(computos));
+        ActionBar bar = new ActionBar(
+                new ActionBarConfig(
+                        "COTIZAR CUBIERTA",
+                        null,
+                        List.of()
+                )
+        );
+
+        toolbarSlot.getChildren().setAll(bar);
+
+        computoBox = new ComboBox<>(
+                FXCollections.observableArrayList(
+                        catalogService.findAll()
+                )
+        );
+        computoBox.getStyleClass().add("quote-combo");
+        computoBox.setMaxWidth(Double.MAX_VALUE);
 
         computoBox.setConverter(new javafx.util.StringConverter<>() {
             @Override
-            public String toString(ComputoDTO dto) {
-                return dto == null ? "" : dto.getName();
+            public String toString(ComputoConfig config) {
+                return config == null ? "" : config.name();
             }
 
             @Override
-            public ComputoDTO fromString(String string) {
+            public ComputoConfig fromString(String value) {
                 return null;
             }
         });
 
-        GridPane form = new GridPane();
-        form.setHgap(10);
-        form.setVgap(10);
-        form.setPadding(new Insets(20));
+        parameterForm = new GridPane();
+        parameterForm.getStyleClass().add("quote-parameters");
+        parameterForm.setHgap(12);
+        parameterForm.setVgap(12);
 
-        form.addRow(0, new Label("Tipo de computo"), computoBox);
-        form.addRow(1, new Label("Altura (m)"), alturaField);
-        form.addRow(2, new Label("Largo (m)"), largoField);
-        form.addRow(3, new Label("Desperdicio (%)"), desperdicioField);
+        resultBox = new VBox(0);
+        resultBox.getStyleClass().add("quote-result-list");
 
-        Button calculate = new Button("Calcular");
-        calculate.setOnAction(e -> calculate());
+        computoBox.valueProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        renderParameters(newValue)
+        );
+
+        VBox inputCard = buildInputCard();
+        VBox resultCard = buildResultCard();
 
         VBox content = new VBox(
-                15,
+                18,
+                inputCard,
+                resultCard
+        );
+        content.getStyleClass().add("quote-content");
+
+        ScrollPane scrollPane = new ScrollPane(content);
+        scrollPane.getStyleClass().add("quote-scroll");
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(
+                ScrollPane.ScrollBarPolicy.NEVER
+        );
+
+        contentSlot.getChildren().setAll(scrollPane);
+    }
+
+    private VBox buildInputCard() {
+        Label title = new Label("DATOS DE COTIZACIÓN");
+        title.getStyleClass().add("quote-card-title");
+
+        Label subtitle = new Label(
+                "Seleccioná el tipo de cubierta e ingresá las medidas"
+        );
+        subtitle.getStyleClass().add("quote-card-subtitle");
+
+        GridPane form = new GridPane();
+        form.getStyleClass().add("quote-form");
+        form.setHgap(14);
+        form.setVgap(12);
+
+        Label computoLabel = new Label("Tipo de computo");
+        computoLabel.getStyleClass().add("quote-label");
+
+        form.add(computoLabel, 0, 0);
+        form.add(computoBox, 1, 0);
+
+        form.add(parameterForm, 0, 1, 2, 1);
+
+        Button calculate = new Button("Calcular cotización");
+        calculate.getStyleClass().add("btn-primary");
+        calculate.setOnAction(event -> calculate());
+
+        VBox card = new VBox(
+                14,
+                title,
+                subtitle,
                 form,
-                calculate,
-                new Separator(),
+                calculate
+        );
+
+        card.getStyleClass().addAll(
+                "card",
+                "quote-input-card"
+        );
+
+        return card;
+    }
+
+    private VBox buildResultCard() {
+        Label title = new Label("RESULTADO DE COTIZACIÓN");
+        title.getStyleClass().add("quote-card-title");
+
+        Label subtitle = new Label(
+                "Detalle de materiales y costos"
+        );
+        subtitle.getStyleClass().add("quote-card-subtitle");
+
+        showEmptyResult();
+
+        VBox card = new VBox(
+                14,
+                title,
+                subtitle,
                 resultBox
         );
-        content.setPadding(new Insets(20));
 
-        contentSlot.getChildren().setAll(new ScrollPane(content));
+        card.getStyleClass().addAll(
+                "card",
+                "quote-result-card"
+        );
+
+        return card;
+    }
+
+    private void renderParameters(ComputoConfig computo) {
+        parameterFields.clear();
+        parameterForm.getChildren().clear();
+        resultBox.getChildren().clear();
+
+        showEmptyResult();
+
+        if (computo == null) {
+            return;
+        }
+
+        int row = 0;
+
+        for (ParameterConfig parameter : computo.parameters()) {
+            Label label = new Label(
+                    parameter.label()
+                            + " ("
+                            + parameter.unit()
+                            + ")"
+            );
+            label.getStyleClass().add("quote-label");
+
+            TextField field = new TextField();
+            field.getStyleClass().add("quote-field");
+            field.setPromptText(parameter.label());
+            field.setPrefWidth(220);
+
+            parameterFields.put(parameter.key(), field);
+
+            parameterForm.add(label, 0, row);
+            parameterForm.add(field, 1, row);
+
+            GridPane.setHgrow(field, Priority.ALWAYS);
+
+            row++;
+        }
     }
 
     private void calculate() {
         try {
-            ComputoDTO computo = computoBox.getValue();
+            ComputoConfig computo = computoBox.getValue();
 
             if (computo == null) {
-                throw new IllegalArgumentException("Seleccioná un computo");
+                throw new IllegalArgumentException(
+                        "Seleccioná un computo"
+                );
             }
 
-            BigDecimal altura = decimal(alturaField);
-            BigDecimal largo = decimal(largoField);
-            BigDecimal desperdicio = decimal(desperdicioField);
+            Map<String, BigDecimal> parameters =
+                    new LinkedHashMap<>();
 
-            BigDecimal superficie = altura.multiply(largo);
-            BigDecimal factor = BigDecimal.ONE.add(
-                    desperdicio.divide(BigDecimal.valueOf(100), 6, RoundingMode.HALF_UP)
+            for (ParameterConfig parameter : computo.parameters()) {
+                TextField field = parameterFields.get(parameter.key());
+
+                if (field == null) {
+                    throw new IllegalArgumentException(
+                            "No existe el campo: "
+                                    + parameter.key()
+                    );
+                }
+
+                parameters.put(
+                        parameter.key(),
+                        decimal(field)
+                );
+            }
+
+            ComputedQuote quote = catalogService.calculate(
+                    computo,
+                    parameters
             );
 
-            BigDecimal superficieConDesperdicio = superficie.multiply(factor);
-
-            resultBox.getChildren().clear();
-            resultBox.getChildren().add(new Label(
-                    "Superficie: " + format(superficie) + " m²"
-            ));
-            resultBox.getChildren().add(new Label(
-                    "Con desperdicio: " + format(superficieConDesperdicio) + " m²"
-            ));
-
-            BigDecimal subtotal = BigDecimal.ZERO;
-
-            for (ItemComputoDTO item : computo.getItems()) {
-                BigDecimal quantity = switch (item.getUnitType()) {
-                    case M2 -> item.getQuantity().multiply(superficieConDesperdicio);
-                    case LINEAL -> item.getQuantity().multiply(largo).multiply(factor);
-                    case UNIDAD -> item.getQuantity();
-                };
-
-                BigDecimal itemSubtotal = quantity.multiply(
-                        item.getUnitPrice() == null
-                                ? BigDecimal.ZERO
-                                : item.getUnitPrice()
-                );
-
-                subtotal = subtotal.add(itemSubtotal);
-
-                resultBox.getChildren().add(new Label(
-                        item.getProductName()
-                                + " | Cantidad: " + format(quantity)
-                                + " | Subtotal: $" + format(itemSubtotal)
-                ));
-            }
-
-            BigDecimal iva = subtotal.multiply(new BigDecimal("0.21"));
-            BigDecimal total = subtotal.add(iva);
-
-            resultBox.getChildren().add(new Separator());
-            resultBox.getChildren().add(new Label("Subtotal: $" + format(subtotal)));
-            resultBox.getChildren().add(new Label("IVA 21%: $" + format(iva)));
-            resultBox.getChildren().add(new Label("TOTAL: $" + format(total)));
+            renderQuote(quote);
 
         } catch (RuntimeException ex) {
-            new Alert(
+            Alert alert = new Alert(
                     Alert.AlertType.ERROR,
                     ex.getMessage(),
                     ButtonType.OK
-            ).showAndWait();
+            );
+
+            DialogTheme.apply(alert);
+            alert.showAndWait();
         }
     }
 
+    private void renderQuote(ComputedQuote quote) {
+        resultBox.getChildren().clear();
+
+        resultBox.getChildren().add(
+                createResultHeader()
+        );
+
+        for (ComputedItem item : quote.items()) {
+            resultBox.getChildren().add(
+                    createResultRow(item)
+            );
+        }
+
+        resultBox.getChildren().add(
+                createSummary(quote)
+        );
+    }
+
+    private GridPane createResultHeader() {
+        GridPane header = createResultGrid();
+        header.getStyleClass().add("quote-result-header");
+
+        header.add(label("PRODUCTO"), 0, 0);
+        header.add(label("CANTIDAD"), 1, 0);
+        header.add(label("UNIDAD"), 2, 0);
+        header.add(label("SUBTOTAL"), 3, 0);
+
+        return header;
+    }
+
+    private GridPane createResultRow(ComputedItem item) {
+        GridPane row = createResultGrid();
+        row.getStyleClass().add("quote-result-row");
+
+        Label product = label(item.productName());
+        product.getStyleClass().add("quote-result-product");
+
+        Label quantity = label(
+                formatQuantity(
+                        item.quantity(),
+                        item.quantityDecimals()
+                )
+        );
+        quantity.getStyleClass().add("quote-result-number");
+
+        Label unit = label(item.unitType().name());
+        unit.getStyleClass().add("quote-result-unit");
+
+        Label subtotal = label(
+                "$" + format(item.subTotal())
+        );
+        subtotal.getStyleClass().add("quote-result-number");
+
+        row.add(product, 0, 0);
+        row.add(quantity, 1, 0);
+        row.add(unit, 2, 0);
+        row.add(subtotal, 3, 0);
+
+        return row;
+    }
+
+    private VBox createSummary(ComputedQuote quote) {
+        Label subtotal = new Label(
+                "Subtotal: $" + format(quote.subtotal())
+        );
+        subtotal.getStyleClass().add("quote-summary-value");
+
+        Label iva = new Label(
+                "IVA 21%: $" + format(quote.iva())
+        );
+        iva.getStyleClass().add("quote-summary-value");
+
+        Label total = new Label(
+                "TOTAL: $" + format(quote.total())
+        );
+        total.getStyleClass().add("quote-total");
+
+        VBox summary = new VBox(
+                6,
+                subtotal,
+                iva,
+                new Separator(),
+                total
+        );
+
+        summary.getStyleClass().add("quote-summary");
+
+        return summary;
+    }
+
+    private GridPane createResultGrid() {
+        GridPane grid = new GridPane();
+        grid.setHgap(14);
+        grid.setPadding(new Insets(10, 0, 10, 0));
+
+        ColumnConstraints productColumn =
+                new ColumnConstraints();
+        productColumn.setHgrow(Priority.ALWAYS);
+
+        ColumnConstraints quantityColumn =
+                new ColumnConstraints(95);
+
+        ColumnConstraints unitColumn =
+                new ColumnConstraints(90);
+
+        ColumnConstraints subtotalColumn =
+                new ColumnConstraints(125);
+
+        grid.getColumnConstraints().addAll(
+                productColumn,
+                quantityColumn,
+                unitColumn,
+                subtotalColumn
+        );
+
+        return grid;
+    }
+
+    private Label label(String text) {
+        return new Label(text);
+    }
+
+    private void showEmptyResult() {
+        Label empty = new Label(
+                "Seleccioná un computo y completá sus medidas"
+        );
+        empty.getStyleClass().add("quote-empty");
+        resultBox.getChildren().add(empty);
+    }
+
     private BigDecimal decimal(TextField field) {
-        if (field.getText() == null || field.getText().isBlank()) {
-            throw new IllegalArgumentException("Completá todos los valores");
+        if (field.getText() == null
+                || field.getText().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Completá todos los valores"
+            );
         }
 
         BigDecimal value = new BigDecimal(
-                field.getText().trim().replace(",", ".")
+                field.getText()
+                        .trim()
+                        .replace(",", ".")
         );
 
         if (value.signum() < 0) {
-            throw new IllegalArgumentException("Los valores no pueden ser negativos");
+            throw new IllegalArgumentException(
+                    "Los valores no pueden ser negativos"
+            );
         }
 
         return value;
     }
 
     private String format(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP).toString();
+        return value
+                .setScale(2, RoundingMode.HALF_UP)
+                .toString();
+    }
+
+    private String formatQuantity(
+            BigDecimal value,
+            int decimals
+    ) {
+        return value
+                .setScale(decimals, RoundingMode.HALF_UP)
+                .toString();
     }
 
     @Override
     public void onSidebarSelection(SidebarItem item) {
-
     }
+
+
+
 }

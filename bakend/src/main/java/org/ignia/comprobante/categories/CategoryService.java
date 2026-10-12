@@ -4,9 +4,7 @@ import org.ignia.comprobante.exception.ConflictException;
 import org.ignia.comprobante.exception.NotFoundException;
 import org.ignia.comprobante.productos.CategoryProductCount;
 import org.ignia.comprobante.productos.ProductRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +16,10 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private static final Sort CATEGORY_SORT = Sort.by(
+            Sort.Order.asc("name").ignoreCase(),
+            Sort.Order.asc("id")
+    );
 
     public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
@@ -26,7 +28,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll()
+        return categoryRepository.findAll(CATEGORY_SORT)
                 .stream()
                 .map(CategoryMapper::toCategoryDto)
                 .toList();
@@ -38,20 +40,33 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Page<CategoryDto> page(Long categoryFilter, Pageable pageable) {
+    public Page<CategoryDto> page(String search, Long categoryFilter, Pageable pageable ) {
         Map<Long, Long> counts = productRepository.countsByCategory().stream()
                 .collect(Collectors.toMap(CategoryProductCount::getCategoryId, CategoryProductCount::getCnt));
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                CATEGORY_SORT
+        );
 
         if (categoryFilter != null) {
             CategoryModel model = categoryRepository.findById(categoryFilter).orElse(null);
             List<CategoryDto> list = model == null
                     ? List.of()
                     : List.of(CategoryMapper.toCategoryDto(model, counts.getOrDefault(model.getId(), 0L)));
-            return new PageImpl<>(list, pageable, list.size());
+            return new PageImpl<>(list, sortedPageable, list.size());
         }
 
-        return categoryRepository.findAll(pageable)
-                .map(m -> CategoryMapper.toCategoryDto(m, counts.getOrDefault(m.getId(), 0L)));
+        Page<CategoryModel> page;
+        if (search == null || search.isBlank()){
+            page = categoryRepository.findAll(sortedPageable);
+        } else{
+            page = categoryRepository.findByNameContainingIgnoreCase(search.trim(), sortedPageable);
+        }
+
+        return page.map(model ->
+                CategoryMapper.toCategoryDto(model, counts.getOrDefault(model.getId(), 0L)));
     }
 
     @Override

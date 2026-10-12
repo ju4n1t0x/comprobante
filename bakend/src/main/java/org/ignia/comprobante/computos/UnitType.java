@@ -1,4 +1,4 @@
-package org.ignia.comprobante.ItemComputo;
+package org.ignia.comprobante.computos;
 
 public enum UnitType {
 
