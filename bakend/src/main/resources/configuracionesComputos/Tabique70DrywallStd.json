@@ -1,0 +1,189 @@
+{
+  "key": "tabique-70-drywall-std",
+  "name": "Tabique 70 Drywall STD",
+  "description": "Tabique con placa STD de 12,5 mm sobre estructura C 70",
+  "parameters": [
+    {
+      "key": "m2",
+      "label": "Metros cuadrados",
+      "unit": "M2"
+    },
+    {
+      "key": "ml",
+      "label": "Metros lineales de paneles",
+      "unit": "LINEAL",
+      "note": "Sirve para calcular soleras"
+    }
+  ],
+  "items": [
+    {
+      "key": "solera",
+      "productUid": "SOL-002",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 1,
+      "note": null,
+      "rule": {
+        "source": "ml",
+        "multiplier": 1,
+        "divisor": 2.5,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "montante",
+      "productUid": "MON-002",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 4,
+        "divisor": 2.5,
+        "factor": 1
+      }
+    },
+    {
+      "key": "placa-std",
+      "productUid": "DUR-002",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 1,
+        "divisor": 2.7,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "can-004",
+      "productUid": "CAN-004",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": "Fórmula pendiente de definir",
+      "rule": {
+        "source": "m2",
+        "multiplier": 0,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "ang-001",
+      "productUid": "ANG-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": "Fórmula pendiente de definir",
+      "rule": {
+        "source": "m2",
+        "multiplier": 0,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "cinta-papel-microperforada",
+      "productUid": "CIN-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 1,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 1.5,
+        "divisor": 75,
+        "factor": 1
+      }
+    },
+    {
+      "key": "masilla-sr",
+      "productUid": "MAS-003",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 0.1,
+        "divisor": 20,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "masilla-lpu",
+      "productUid": "MAS-007",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 0.8,
+        "divisor": 28,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "tornillo-fijacion-5x45",
+      "productUid": "TOR-004",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 3,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "taco-tarugo-nyl-8x40",
+      "productUid": "TAR-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 3,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t1-aguja-8x12",
+      "productUid": "TOR-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 10,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t1-mecha-8x12",
+      "productUid": "TOR-002",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 10,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t2",
+      "productUid": "TOR-003",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "placa-std",
+        "multiplier": 60,
+        "divisor": 1,
+        "factor": 1
+      }
+    }
+  ]
+}

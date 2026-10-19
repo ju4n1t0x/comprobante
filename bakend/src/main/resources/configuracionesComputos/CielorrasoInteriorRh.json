@@ -1,0 +1,163 @@
+{
+  "key": "cielorraso-interior-rh",
+  "name": "Cielorraso Interior RH",
+  "description": "Cielorraso con placa RH de 12,5 mm",
+  "parameters": [
+    {
+      "key": "m2",
+      "label": "Metros cuadrados",
+      "unit": "M2"
+    },
+    {
+      "key": "ml",
+      "label": "Metros lineales de perimetro",
+      "unit": "LINEAL",
+      "note": "Sirve para calcular soleras"
+    }
+  ],
+  "items": [
+    {
+      "key": "solera",
+      "productUid": "SOL-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 1,
+      "note": null,
+      "rule": {
+        "source": "ml",
+        "multiplier": 1,
+        "divisor": 2.5,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "montante",
+      "productUid": "MON-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 4,
+        "divisor": 2.5,
+        "factor": 1
+      }
+    },
+    {
+      "key": "placa-rh",
+      "productUid": "DUR-008",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 1,
+        "divisor": 2.7,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "cinta-papel-microperforada",
+      "productUid": "CIN-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 1,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 1.5,
+        "divisor": 75,
+        "factor": 1
+      }
+    },
+    {
+      "key": "masilla-sr",
+      "productUid": "MAS-003",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 0.1,
+        "divisor": 20,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "masilla-lpu",
+      "productUid": "MAS-007",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 0.8,
+        "divisor": 28,
+        "factor": 1.1
+      }
+    },
+    {
+      "key": "tornillo-fijacion-5x45",
+      "productUid": "TOR-004",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 3,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "taco-tarugo-nyl-8x40",
+      "productUid": "TAR-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 3,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t1-aguja-8x12",
+      "productUid": "TOR-001",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "m2",
+        "multiplier": 10,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t1-mecha-8x12",
+      "productUid": "TOR-002",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "ml",
+        "multiplier": 10,
+        "divisor": 1,
+        "factor": 1
+      }
+    },
+    {
+      "key": "tornillo-t2",
+      "productUid": "TOR-003",
+      "unitType": "UNIDAD",
+      "quantityDecimals": 0,
+      "note": null,
+      "rule": {
+        "source": "placa-rh",
+        "multiplier": 60,
+        "divisor": 1,
+        "factor": 1
+      }
+    }
+  ]
+}
