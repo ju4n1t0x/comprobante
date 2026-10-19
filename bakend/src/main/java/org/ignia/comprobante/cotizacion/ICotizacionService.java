@@ -1,6 +1,8 @@
 package org.ignia.comprobante.cotizacion;
 
 import org.ignia.comprobante.computos.result.ComputedQuote;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,6 +20,9 @@ public interface ICotizacionService {
 
     CotizacionDto updateState(Long id, State state);
 
+    Page<CotizacionDto> page(State state, String search, Pageable pageable);
+
+    long countByState(State state);
 
 
 }
