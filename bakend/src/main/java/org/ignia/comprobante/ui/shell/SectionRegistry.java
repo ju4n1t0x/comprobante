@@ -45,7 +45,9 @@ public class SectionRegistry {
                         || id == SectionId.CLIENTES
                         || id == SectionId.PRODUCTOS
                         || id == SectionId.CATEGORIAS
-                        || id == SectionId.COTIZAR;
+                        || id == SectionId.COTIZAR
+                        || id == SectionId.COMPUTOS
+                        || id == SectionId.COTIZACIONES;
         };
     }
 

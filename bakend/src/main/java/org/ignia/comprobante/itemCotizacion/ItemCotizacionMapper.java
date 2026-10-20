@@ -14,7 +14,7 @@ public final class ItemCotizacionMapper {
                 .productKey(model.getProductKey())
                 .productUID(model.getProductUID())
                 .productName(model.getProductName())
-                .unitType(model.getUnitType())
+                .unitType(String.valueOf(model.getUnitType()))
                 .quantity(model.getQuantity())
                 .quantityDecimals(model.getQuantityDecimals())
                 .unitPrice(model.getUnitPrice())

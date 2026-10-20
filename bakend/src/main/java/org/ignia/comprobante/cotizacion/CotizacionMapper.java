@@ -35,8 +35,10 @@ public final class CotizacionMapper {
                 .state(model.getState())
                 .clientId(model.getClient() != null ? model.getClient().getId() : null)
                 .clientName(model.getClient() != null ? model.getClient().getName() : null)
+                .clientLastName(model.getClient() != null ? model.getClient().getLastName() : null)
                 .clientDni(model.getClient() != null ? model.getClient().getDni() : null)
                 .items(items)
                 .build();
     }
+
 }

@@ -8,7 +8,8 @@ public enum SectionId {
     USUARIOS("Usuarios"),
     REPORTES("Reportes"),
     COTIZAR("Cotizar cubierta"),
-    COMPUTOS("Computos");
+    COMPUTOS("Computos"),
+    COTIZACIONES("Cotizaciones");
 
 
     private final String label;

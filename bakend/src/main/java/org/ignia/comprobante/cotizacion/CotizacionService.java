@@ -66,6 +66,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> getAllCotizaciones() {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findAllOrdered()) {
@@ -75,6 +76,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> findByClientId(Long clientId) {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findByClientId(clientId)) {
@@ -84,6 +86,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> findByState(State state) {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findByState(state)) {
@@ -102,6 +105,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CotizacionDto> page(State state, String search, Pageable pageable) {
 
         Long id = null;

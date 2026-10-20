@@ -30,7 +30,7 @@ public interface CotizacionRepository extends JpaRepository<CotizacionModel, Lon
         AND (:id IS NULL OR c.id = :id)
                 """)
     Page<CotizacionModel> search(
-            @Param("sate") State state,
+            @Param("state") State state,
             @Param("id") Long id,
             Pageable pageable
     );
