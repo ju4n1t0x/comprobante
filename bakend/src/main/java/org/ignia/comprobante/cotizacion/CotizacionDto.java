@@ -24,5 +24,8 @@ public class CotizacionDto {
     private LocalDateTime createdAt;
     private State state;
     private Long clientId;
+    private String clientName;
+    private String clientLastName;
+    private String clientDni;
     private List<ItemCotizacionDto> items;
 }

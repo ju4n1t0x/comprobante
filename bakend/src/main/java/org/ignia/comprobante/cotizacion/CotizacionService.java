@@ -7,6 +7,8 @@ import org.ignia.comprobante.exception.NotFoundException;
 import org.ignia.comprobante.itemCotizacion.ItemCotizacionMapper;
 import org.ignia.comprobante.itemCotizacion.ItemCotizacionModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +66,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> getAllCotizaciones() {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findAllOrdered()) {
@@ -73,6 +76,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> findByClientId(Long clientId) {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findByClientId(clientId)) {
@@ -82,6 +86,7 @@ public class CotizacionService implements ICotizacionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CotizacionDto> findByState(State state) {
         List<CotizacionDto> result = new ArrayList<>();
         for (CotizacionModel model : cotizacionRepository.findByState(state)) {
@@ -97,6 +102,28 @@ public class CotizacionService implements ICotizacionService{
                 .orElseThrow(() -> new NotFoundException("Cotización no encontrada"));
         model.setState(state);
         return CotizacionMapper.toCotizacionDto(cotizacionRepository.save(model));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CotizacionDto> page(State state, String search, Pageable pageable) {
+
+        Long id = null;
+
+        if (search != null && !search.isBlank()) {
+            try {
+                id = Long.parseLong(search.trim());
+            } catch (NumberFormatException ex) {
+                return Page.empty(pageable);
+            }
+        }
+        return cotizacionRepository.search(state, id, pageable)
+                .map(CotizacionMapper::toCotizacionDto);
+    }
+
+    @Override
+    public long countByState(State state) {
+        return cotizacionRepository.countByState(state);
     }
 
 

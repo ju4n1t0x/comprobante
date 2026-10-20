@@ -5,21 +5,28 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import org.ignia.comprobante.cliente.IClientService;
 import org.ignia.comprobante.computos.IComputoCatalogService;
 import org.ignia.comprobante.computos.config.ComputoConfig;
 import org.ignia.comprobante.computos.config.ParameterConfig;
 import org.ignia.comprobante.computos.result.ComputedItem;
 import org.ignia.comprobante.computos.result.ComputedQuote;
+import org.ignia.comprobante.cotizacion.ICotizacionService;
+import org.ignia.comprobante.security.SessionService;
 import org.ignia.comprobante.ui.NavigationService;
 import org.ignia.comprobante.ui.components.ActionBar;
 import org.ignia.comprobante.ui.components.DialogTheme;
 import org.ignia.comprobante.ui.model.ActionBarConfig;
+import org.ignia.comprobante.ui.model.ButtonDef;
 import org.ignia.comprobante.ui.model.SidebarItem;
 import org.ignia.comprobante.ui.shell.SectionView;
+import org.ignia.comprobante.ui.view.sales.ClientPickerDialog;
+import org.ignia.comprobante.user.Role;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +39,12 @@ public class CotizarController implements SectionView {
 
     private final IComputoCatalogService catalogService;
     private final NavigationService navigationService;
+    private final IClientService clientService;
+    private final ICotizacionService cotizacionService;
+    private SessionService sessionService;
+
+    private ComputedQuote lastQuote;
+    private Map<String, BigDecimal> lastParameters;
 
     private ComboBox<ComputoConfig> computoBox;
     private GridPane parameterForm;
@@ -42,21 +55,33 @@ public class CotizarController implements SectionView {
 
     public CotizarController(
             IComputoCatalogService catalogService,
-            NavigationService navigationService
+            NavigationService navigationService,
+            IClientService clientService,
+            ICotizacionService cotizacionService,
+            SessionService sessionService
     ) {
         this.catalogService = catalogService;
         this.navigationService = navigationService;
+        this.clientService = clientService;
+        this.cotizacionService = cotizacionService;
+        this.sessionService = sessionService;
     }
 
     @FXML
     private void initialize() {
         navigationService.registerView(this);
 
+        List<ButtonDef> actions = new ArrayList<>();
+
+        if (sessionService.getCurrentUserRole() != Role.SELLER) {
+            actions.add(new ButtonDef("+ Crear cotizacion", ButtonDef.Style.PRIMARY, this::openCreateQuote));
+        }
+
         ActionBar bar = new ActionBar(
                 new ActionBarConfig(
                         "COTIZAR CUBIERTA",
                         null,
-                        List.of()
+                        actions
                 )
         );
 
@@ -257,6 +282,9 @@ public class CotizarController implements SectionView {
 
             renderQuote(quote);
 
+            lastQuote = quote;
+            lastParameters = parameters;
+
         } catch (RuntimeException ex) {
             Alert alert = new Alert(
                     Alert.AlertType.ERROR,
@@ -439,6 +467,42 @@ public class CotizarController implements SectionView {
 
     @Override
     public void onSidebarSelection(SidebarItem item) {
+    }
+
+    private void openCreateQuote() {
+
+        if (lastQuote == null) {
+            Alert alert = new Alert(
+                    Alert.AlertType.WARNING,
+                    "Calcula la cotizacion antes de guardarla",
+            ButtonType.OK
+            );
+            DialogTheme.apply(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        new ClientPickerDialog(clientService).showAndWait().ifPresent(
+                client -> {
+                    try{
+                        cotizacionService.createCotizacion(lastQuote, lastParameters, client.getId());
+
+                        Alert ok = new Alert(
+                                Alert.AlertType.INFORMATION,
+                                "Cotizacion guardada para" + client.getName() + " " + client.getLastName(),
+                                ButtonType.OK
+                        );
+                        DialogTheme.apply(ok);
+                        ok.showAndWait();
+
+                        navigationService.refreshSidebar();
+                    } catch (RuntimeException ex) {
+                        Alert error = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
+                        DialogTheme.apply(error);
+                        error.showAndWait();
+                    }
+                }
+        );
     }
 
 
